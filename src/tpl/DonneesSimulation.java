@@ -2,6 +2,8 @@ package tpl;
 
 import java.util.ArrayList;
 
+import robot.Robot;
+
 public class DonneesSimulation {
 	private Carte carte ;
 	private ArrayList<Incendie> incendies = new ArrayList<Incendie>();

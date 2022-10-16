@@ -1,4 +1,7 @@
-package tpl;
+package robot;
+
+import tpl.Case;
+import tpl.NatureTerrain;
 
 public abstract class Robot {
 	private Case position;
@@ -7,9 +10,7 @@ public abstract class Robot {
 		return position;
 	}
 
-	public void setPosition(Case position) {
-		this.position = position;
-	}
+	public abstract void setPosition(Case position);
 	
 	public abstract double getVitesse(NatureTerrain nature);
 	
