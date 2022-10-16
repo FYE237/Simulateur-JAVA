@@ -62,6 +62,12 @@ public class Carte {
 				return src;
 		}
 	}
-	
 
+	@Override
+	public String toString() {
+		return "Carte [nbLignes=" + nbLignes + ", nbColonnes=" + nbColonnes + ", tailleCases=" + tailleCases + "]";
+	}
+	
+	
+	
 }

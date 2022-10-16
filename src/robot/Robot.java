@@ -19,5 +19,10 @@ public abstract class Robot {
 	public abstract void deverserEau(int vol);
 	
 	public abstract void remplirReservoir();
+
+	@Override
+	public String toString() {
+		return "Robot [position=" + position + ", volumeReservoir=" + volumeReservoir + ", vitesse=" + vitesse + "]";
+	}
 	
 }
