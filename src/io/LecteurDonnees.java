@@ -65,6 +65,9 @@ public class LecteurDonnees {
     	DonneesSimulation d = new DonneesSimulation(lecteur.creeCarte());
     	lecteur.creeIncendies(d);
     	lecteur.creeRobots(d);
+    	scanner.close();
+    	System.out.println(d);
+        System.out.println("\n == Lecture terminee");
     	return d;
     }
 

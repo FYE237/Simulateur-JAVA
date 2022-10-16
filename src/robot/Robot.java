@@ -22,7 +22,7 @@ public abstract class Robot {
 
 	@Override
 	public String toString() {
-		return "Robot [position=" + position + ", volumeReservoir=" + volumeReservoir + ", vitesse=" + vitesse + "]";
+		return "Robot [position=" + position + ", volumeReservoir=" + volumeReservoir + ", vitesse=" + vitesse + "]\n";
 	}
 	
 }

@@ -36,6 +36,11 @@ public class DonneesSimulation {
 	public void addRobots(Robot robot) {
 		this.robots.add(robot);
 	}
+
+	@Override
+	public String toString() {
+		return "DonneesSimulation [carte=\n" + carte.toString() + "\n, incendies=" + incendies.toString() + "\n, robots=" + robots.toString() + "]";
+	}
 	
 	
 }

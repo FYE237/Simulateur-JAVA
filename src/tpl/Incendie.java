@@ -16,5 +16,10 @@ public class Incendie {
 	public int getIntensite() {
 		return intensite;
 	}
+
+	@Override
+	public String toString() {
+		return "Incendie [position=" + position + ", intensite=" + intensite + "]\n";
+	}
 	
 }
