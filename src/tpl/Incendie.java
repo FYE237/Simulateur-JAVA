@@ -2,19 +2,19 @@ package tpl;
 
 public class Incendie {
 	private Case position;
-	private int volExtinction;
+	private int intensite;
 	
-	public Incendie(Case position, int volExtinction) {
+	public Incendie(Case position, int intensite) {
 		this.position = position;
-		this.volExtinction = volExtinction;
+		this.intensite = intensite;
 	}
 
 	public Case getPosition() {
 		return position;
 	}
 	
-	public int getVolExtinction() {
-		return volExtinction;
+	public int getIntensite() {
+		return intensite;
 	}
 	
 }
