@@ -1,5 +1,6 @@
 
 import io.LecteurDonnees;
+import tpl.DonneesSimulation;
 
 import java.io.FileNotFoundException;
 import java.util.zip.DataFormatException;
@@ -13,7 +14,8 @@ public class TestLecteurDonnees {
         }
 
         try {
-            LecteurDonnees.creeDonnees(args[0]);
+            DonneesSimulation d = LecteurDonnees.creeDonnees(args[0]);
+            System.out.println(d);
         } catch (FileNotFoundException e) {
             System.out.println("fichier " + args[0] + " inconnu ou illisible");
         } catch (DataFormatException e) {
