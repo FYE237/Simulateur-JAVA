@@ -3,6 +3,7 @@
  */
 package robot;
 
+import tpl.Carte;
 import tpl.Case;
 import tpl.NatureTerrain;
 
@@ -15,6 +16,7 @@ public class RobotAPatte extends Robot {
 	public RobotAPatte (Case position) {
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		this.vitesse = 30;
+		this.debit = 10;
 		this.volumeReservoir=Integer.MAX_VALUE;
 	}
 	
@@ -50,14 +52,15 @@ public class RobotAPatte extends Robot {
 	}
 
 	@Override
-	public void deverserEau(int vol) {
+	public void deverserEau() {
 		// TODO Auto-generated method stub
-		this.volumeReservoir -=10;
+			this.volumeReservoir -= this.debit;
 	}
 
 	@Override
-	public void remplirReservoir() {
+	public void remplirReservoir(Carte carte) {
 		// TODO Auto-generated method stub
+		this.volumeReservoir=Integer.MAX_VALUE;
 	}
 
 }

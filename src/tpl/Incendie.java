@@ -17,6 +17,10 @@ public class Incendie {
 		return intensite;
 	}
 
+	public void setIntensite(int intensite) {
+		this.intensite = intensite;
+	} 
+	
 	@Override
 	public String toString() {
 		return "Incendie [position=" + position + ", intensite=" + intensite + "]\n";

@@ -17,13 +17,13 @@ public class DonneesSimulation {
 		return carte;
 	}
 
-//	public ArrayList<Incendie> getIncendies() {
-//		return incendies;
-//	}
-//
-//	public ArrayList<Robot> getRobots() {
-//		return robots;
-//	}
+	public ArrayList<Incendie> getIncendies() {
+		return incendies;
+	}
+
+	public ArrayList<Robot> getRobots() {
+		return robots;
+	}
 
 	public void setCarte(Carte carte) {
 		this.carte = carte;

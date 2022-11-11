@@ -1,5 +1,6 @@
 package robot;
 
+import tpl.Carte;
 import tpl.Case;
 import tpl.NatureTerrain;
 
@@ -14,6 +15,7 @@ public class Drone extends Robot{
 	
 	public Drone(Case position) {
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
+		this.debit = 10000;
 		this.vitesse = 100 ;
 		this.volumeReservoir=10000;
 	}
@@ -43,17 +45,18 @@ public class Drone extends Robot{
 
 	//Il vide le reservoir
 	@Override
-	public void deverserEau(int vol) {
+	public void deverserEau() {
 		// TODO Auto-generated method stub
 		this.volumeReservoir= 0;
 	}
 
 	@Override
-	public void remplirReservoir() {
+	public void remplirReservoir(Carte carte) {
 		// TODO Auto-generated method stub
 		if(this.getPosition().getNature() == NatureTerrain.EAU) {
 			this.volumeReservoir = 10000;
 		}
+		
 	}
 	
 	

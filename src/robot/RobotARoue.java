@@ -16,6 +16,7 @@ public class RobotARoue  extends Robot{
 	public RobotARoue (Case position) {
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		this.vitesse = 80;
+		this.debit = 100;
 		this.volumeReservoir=5000;
 	}
 	
@@ -43,13 +44,13 @@ public class RobotARoue  extends Robot{
 	}
 
 	@Override
-	public void deverserEau(int vol) {
+	public void deverserEau() {
 		// TODO Auto-generated method stub
 		if(this.volumeReservoir < 100) {
 			this.volumeReservoir = 0;
 		}
 		else {
-			this.volumeReservoir -=100;
+			this.volumeReservoir -= 4;
 		}
 	}
 

@@ -15,7 +15,7 @@ public class TestInvader {
         GUISimulator gui = new GUISimulator(800, 600, Color.BLACK);
         // crée l'invader, en l'associant à la fenêtre graphique précédente
         //Invader invader = new Invader(gui, Color.decode("#f2ff28"));
-        Simulateur invader = new Simulateur(gui, Color.RED);
+        //Simulateur invader = new Simulateur(gui, Color.RED);
     }
 }
 

@@ -15,7 +15,6 @@ public class TestLecteurDonnees {
 
         try {
             DonneesSimulation d = LecteurDonnees.creeDonnees(args[0]);
-            System.out.println(d);
         } catch (FileNotFoundException e) {
             System.out.println("fichier " + args[0] + " inconnu ou illisible");
         } catch (DataFormatException e) {
