@@ -34,8 +34,8 @@ public abstract class Robot {
 		return Math.sqrt(a*a + b*b);
 	}
 	
-	public double  getDureeDeplacement(Case destination) {
-		double d = this.calculDistance(destination);
+	public double  getDureeDeplacement(Case destination,Carte carte) {
+		double d = this.calculDistance(destination)*carte.getTailleCases();
 		return d/this.getVitesse(this.position.getNature());
 	}
 	
