@@ -2,8 +2,8 @@ import gui.GUISimulator;
 import gui.Rectangle;
 import gui.Simulable;
 import gui.Text;
-import tpl.DonneesSimulation;
-import tpl.NatureTerrain;
+import robot.Robot;
+import tpl.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -24,8 +24,6 @@ public class Simulateur implements Simulable {
 	/** L'interface graphique associée */
 	private GUISimulator gui;
 
-	/** La couleur de dessin du robot */
-	private Color robotColor;
 
 	/** Données de simulation */
 	private DonneesSimulation donneesSimulation;
@@ -46,6 +44,11 @@ public class Simulateur implements Simulable {
 	/** Itérateur sur les ordonnées du robot au cours du temps */
 	private Iterator<Integer> yIterator;
 
+	/**Date ou étape courante de la simulation**/
+	private long dateSimuation = 0;
+
+	/*Liste d'évènements à exéccuter*/
+	private ArrayList<Evenement> events = new ArrayList<Evenement>();
 
 	/**
 	 * Crée un robot et le dessine.
@@ -56,14 +59,19 @@ public class Simulateur implements Simulable {
 	public  Simulateur(GUISimulator gui, DonneesSimulation d) {
 		this.gui = gui;
 		gui.setSimulable(this);				// association a la gui!
-		//this.robotColor = d;
+		this.donneesSimulation = d;
 
-		planCoordinates(5,1,7,2,75);
 		draw();
 	}
 
+
 	/**
 	 * Programme les déplacements de le robot.
+	 * @param abscisseInitial
+	 * @param abscisseFinal
+	 * @param ordonneeInitial
+	 * @param ordonneeFinal
+	 * @param taillecase
 	 */
 	private void planCoordinates(int abscisseInitial, int abscisseFinal, int ordonneeInitial, int ordonneeFinal, int taillecase) {
 		// panel must be large enough... unchecked here!
@@ -111,17 +119,12 @@ public class Simulateur implements Simulable {
 		}
 
 
-
-
 		this.xIterator = xCoords.iterator();
 		this.yIterator = yCoords.iterator();
 		// current position
 		this.x = xInitial;
 		this.y = yInitial;
 	}
-
-
-
 	@Override
 	public void next() {
 		if (this.xIterator.hasNext())
@@ -134,8 +137,145 @@ public class Simulateur implements Simulable {
 
 	@Override
 	public void restart() {
-		planCoordinates(5,1,7,2,75);
 		draw();
+	}
+
+
+	/**
+	 * Dessiner l'environnement
+	 */
+	private void draw(){
+		gui.reset();
+		setTailleCase();
+		drawCarte(donneesSimulation.getCarte());
+		drawListeIncendies(donneesSimulation.getIncendies());
+		drawListeRobot(donneesSimulation.getRobots());
+	}
+
+
+
+
+	/**
+	 * Dessiner une case
+	 * @param cote
+	 * @param colors
+	 * @param abscisse
+	 * @param ordonnee
+	 */
+	private void drawCase(int cote, Color colors, int abscisse, int ordonnee){
+		for(int j=0; j<cote;  j+=10) {
+			for (int i = 0; i < cote; i += 10) {
+				gui.addGraphicalElement(new gui.Rectangle(abscisse + i, ordonnee + j, colors, colors, 10));
+			}
+		}
+
+	}
+
+	/*Ajouter un evènement*/
+	private void ajouteEvenement(Evenement e){
+		this.events.add(e);
+	}
+
+	/*Verifie si la simulation est terminée*/
+	private boolean simulationTerminee(){
+		return this.dateSimuation == this.events.size();
+	}
+
+	/*Incremente la date de la simulation*/
+	private void incrementeDate(){
+		if(!simulationTerminee()) {
+			this.dateSimuation += 1;
+		}
+	}
+
+
+	/**
+	 * Dessiner la liste des incendies
+	 * @param incendies
+	 */
+	private void drawListeIncendies(ArrayList<Incendie> incendies){
+		for(Incendie incendie : incendies){
+			if(incendie.getIntensite() != 0) {
+				drawIncendie(this.tailleCase / 2, Color.red, incendie.getPosition().getLigne() * this.tailleCase, incendie.getPosition().getColonne() * this.tailleCase);
+			}
+		}
+	}
+
+
+	/**
+	 * Dessiner un incendie
+	 * @param cote
+	 * @param colors
+	 * @param abscisse
+	 * @param ordonnee
+	 */
+
+	private void drawIncendie(int cote, Color colors, int abscisse, int ordonnee){
+		//gui.reset();
+		for(int j=0; j<cote;  j+=10) {
+			for (int i = 0; i < cote; i += 10) {
+				gui.addGraphicalElement(new Rectangle(abscisse + i + this.tailleCase/4, ordonnee + j + this.tailleCase/4, colors, colors, 10));
+			}
+		}
+	}
+
+
+	/**
+	 * Dessiner la carte
+	 * @param carte
+	 */
+	private void drawCarte(Carte carte){
+		for(int i = 0; i < carte.getNbLignes(); i++){
+			for(int j = 0; j< carte.getNbColonnes(); j++){
+				drawCase(this.tailleCase, getColorTerrain(carte.getCase(i,j).getNature()),this.tailleCase*i, this.tailleCase*j );
+			}
+		}
+	}
+
+
+	/**
+	 * Dessiner les robots
+	 * @param robots
+	 */
+	private void drawListeRobot(ArrayList<Robot> robots){
+		for(Robot robot : robots){
+
+			switch(robot.getClass().getName()){
+				case "robot.Drone":
+					drawRobot(robot,Color.cyan, "DR");
+					break;
+				case "robot.RobotAChenille":
+					drawRobot(robot, Color.pink, "RAC");
+					break;
+				case "robot.RobotAPatte":
+					drawRobot(robot, Color.magenta, "RAP");
+					break;
+				case "robot.RobotARoue":
+					drawRobot(robot, Color.lightGray, "RAR");
+					break;
+				default:
+					drawRobot(robot, Color.black,"RAS");
+
+			}
+		}
+	}
+
+
+	/**
+	 * Dessine un robot.
+	 * @param robot
+	 * @param color
+	 * @param name
+	 */
+	private void drawRobot(Robot robot, Color color, String name) {
+
+		for(int j=0; j<this.tailleCase/2;  j+=10) {
+			for (int i = 0; i < this.tailleCase/2; i += 10) {
+				gui.addGraphicalElement(new Rectangle(robot.getPosition().getLigne()*this.tailleCase + i + this.tailleCase/4, robot.getPosition().getColonne()*this.tailleCase + j + this.tailleCase/4, color, color, 10));
+			}
+		}
+		gui.addGraphicalElement(new Text(robot.getPosition().getLigne()*this.tailleCase + tailleCase/2 , robot.getPosition().getColonne()*this.tailleCase  + this.tailleCase/2 , Color.black, name));
+
 	}
 
 	/** calcul de la taille d'une case */
@@ -149,16 +289,11 @@ public class Simulateur implements Simulable {
 	}
 
 	/**
-	 * Dessine le robot.
+	 * rechercher la couleur d'un terrain
+	 * @param nature
+	 * @return
 	 */
-	private void draw(){
-		gui.reset();
-		drawCase(80,getColor(NatureTerrain.EAU),10,10);
-		drawIncendie(40,Color.red,30,30);
-		drawRobot();
-	}
-
-	private Color getColor(NatureTerrain nature){
+	private Color getColorTerrain(NatureTerrain nature){
 		switch (nature){
 			case EAU:
 				return Color.BLUE;
@@ -171,104 +306,10 @@ public class Simulateur implements Simulable {
 			case TERRAIN_LIBRE:
 				return Color.white;
 			default:
-				return Color.white;
+				return Color.black;
 
 		}
 	}
 
-	private void drawCase(int cote, Color colors, int abscisse, int ordonnee){
-		//gui.reset();
-		for(int j=0; j<cote;  j+=10) {
-			for (int i = 0; i < cote; i += 10) {
-				gui.addGraphicalElement(new gui.Rectangle(abscisse + i, ordonnee + j, colors, colors, 10));
-			}
-		}
-
-	}
-
-	private void drawIncendie(int cote, Color colors, int abscisse, int ordonnee){
-		//gui.reset();
-		for(int j=0; j<cote;  j+=10) {
-			for (int i = 0; i < cote; i += 10) {
-				gui.addGraphicalElement(new Rectangle(abscisse + i, ordonnee + j, colors, colors, 10));
-			}
-		}
-	}
-
-	/**
-	 * Dessine le robot.
-	 */
-	private void drawRobot() {
-		gui.addGraphicalElement(new Rectangle(x + 30, y, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 40, y, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 50, y, robotColor, robotColor, 10));
-
-		gui.addGraphicalElement(new Rectangle(x + 20, y + 10, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 30, y + 10, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 40, y + 10, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 50, y + 10, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 60, y + 10, robotColor, robotColor, 10));
-
-		gui.addGraphicalElement(new Rectangle(x + 10, y + 20, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 20, y + 20, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 30, y + 20, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 40, y + 20, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 50, y + 20, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 60, y + 20, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 70, y + 20, robotColor, robotColor, 10));
-
-		gui.addGraphicalElement(new Rectangle(x, y + 30, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 10, y + 30, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 40, y + 30, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 70, y + 30, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 80, y + 30, robotColor, robotColor, 10));
-
-		gui.addGraphicalElement(new Rectangle(x, y + 40, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 10, y + 40, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 40, y + 40, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 70, y + 40, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 80, y + 40, robotColor, robotColor, 10));
-
-		gui.addGraphicalElement(new Rectangle(x, y + 50, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 10, y + 50, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 20, y + 50, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 30, y + 50, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 40, y + 50, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 50, y + 50, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 60, y + 50, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 70, y + 50, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 80, y + 50, robotColor, robotColor, 10));
-
-		gui.addGraphicalElement(new Rectangle(x + 20, y + 60, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 30, y + 60, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 40, y + 60, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 50, y + 60, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 60, y + 60, robotColor, robotColor, 10));
-
-		gui.addGraphicalElement(new Rectangle(x + 10, y + 70, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 20, y + 70, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 30, y + 70, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 40, y + 70, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 50, y + 70, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 60, y + 70, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 70, y + 70, robotColor, robotColor, 10));
-
-		gui.addGraphicalElement(new Rectangle(x + 10, y + 80, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 20, y + 80, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 30, y + 80, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 40, y + 80, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 50, y + 80, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 60, y + 80, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 70, y + 80, robotColor, robotColor, 10));
-
-		gui.addGraphicalElement(new Rectangle(x, y + 90, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 20, y + 90, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 60, y + 90, robotColor, robotColor, 10));
-		gui.addGraphicalElement(new Rectangle(x + 80, y + 90, robotColor, robotColor, 10));
-
-		gui.addGraphicalElement(new Text(x + 40, y + 120, robotColor, "L'INVADER"));
-
-
-	}
 
 }
