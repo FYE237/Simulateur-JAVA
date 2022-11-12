@@ -53,10 +53,10 @@ public class Simulateur implements Simulable {
 	 * dessin et qui enverra les messages via les méthodes héritées de
 	 * Simulable.
 	 */
-	public  Simulateur(GUISimulator gui, Color robotColor) {
+	public  Simulateur(GUISimulator gui, DonneesSimulation d) {
 		this.gui = gui;
 		gui.setSimulable(this);				// association a la gui!
-		this.robotColor = robotColor;
+		//this.robotColor = d;
 
 		planCoordinates(5,1,7,2,75);
 		draw();

@@ -1,6 +1,8 @@
 package robot;
 
+import tpl.Carte;
 import tpl.Case;
+import tpl.Direction;
 import tpl.NatureTerrain;
 
 public class RobotAChenille extends Robot {
@@ -8,8 +10,8 @@ public class RobotAChenille extends Robot {
 	public RobotAChenille (Case position) {
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		this.vitesse = 60;
-		this.debit = 100;
 		this.volumeReservoir=2000;
+		this.debit = 100;
 	}
 	
 	public RobotAChenille (Case position, double vitesse) {
@@ -23,18 +25,20 @@ public class RobotAChenille extends Robot {
 		this.volumeReservoir=2000;
 	}
 	
+	//fye
 	@Override
-	public void setPosition(Case position) {
+	public void setPosition(Carte carte,Case position) {
 		// TODO Auto-generated method stub
-		if(position.getNature() != NatureTerrain.EAU &&
-				position.getNature() != NatureTerrain.ROCHE	) {
-			this.position = new Case(position.getLigne(),position.getColonne(),
-										position.getNature());
+		if(checkPosition(carte, position)) {
+			if(position.getNature() != NatureTerrain.EAU &&
+					position.getNature() != NatureTerrain.ROCHE	) {
+				this.position = new Case(position.getLigne(),position.getColonne(),
+											position.getNature());
+			}
+			if(position.getNature() == NatureTerrain.FORET) {
+				this.vitesse= this.vitesse*0.5;
+			}
 		}
-		if(position.getNature() == NatureTerrain.FORET) {
-			this.vitesse= this.vitesse*0.5;
-		}
-		
 	}
 
 	@Override
@@ -46,7 +50,7 @@ public class RobotAChenille extends Robot {
 	@Override
 	public void deverserEau() {
 		// TODO Auto-generated method stub
-		if(this.volumeReservoir < 100) {
+		if(this.volumeReservoir < this.debit) {
 			this.volumeReservoir = 0;
 		}
 		else {
@@ -54,10 +58,28 @@ public class RobotAChenille extends Robot {
 		}
 	}
 
+	//fye
 	@Override
-	public void remplirReservoir() {
+	public void remplirReservoir(Carte carte) {
+		if(carte.voisinExiste(this.getPosition(), Direction.NORD)) 
+		{
+		   if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU ) 
+			   this.volumeReservoir = 2000;
+		}
+		else if(carte.voisinExiste(this.getPosition(), Direction.SUD)) {
+			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU )
+				this.volumeReservoir = 2000;
+		}
+		else if(carte.voisinExiste(this.getPosition(), Direction.OUEST)) {
+			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU )
+				this.volumeReservoir = 2000;
+		}
+		else if(carte.voisinExiste(this.getPosition(), Direction.EST)) {
+			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU )
+				this.volumeReservoir = 2000;
+		}
 		// TODO Auto-generated method stub
-		this.volumeReservoir = 5000;
+		
 	}
 
 }

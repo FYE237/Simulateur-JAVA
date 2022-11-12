@@ -1,5 +1,6 @@
 package robot;
 
+
 import tpl.Carte;
 import tpl.Case;
 import tpl.NatureTerrain;
@@ -7,14 +8,14 @@ import tpl.NatureTerrain;
 public abstract class Robot {
 	protected Case position;
 	protected int volumeReservoir;
-	protected double debit;
 	protected double vitesse;
+	protected double debit;
 
 	public Case getPosition() {
 		return position;
 	}
 
-	public abstract void setPosition(Case position) ;
+	public abstract void setPosition(Carte carte,Case position) ;
 	
 	public abstract double getVitesse(NatureTerrain nature);
 	
@@ -22,10 +23,20 @@ public abstract class Robot {
 	
 	public abstract void remplirReservoir(Carte carte);
 	
-	public boolean checkPosition(Carte carte , Case position) {
-		if(position.getColonne() < carte.getNbColonnes() && position.getLigne() < carte.getNbLignes())
-			return true;
+	public boolean checkPosition(Carte carte, Case position) {
+		if(position.getColonne() < carte.getNbColonnes() && position.getLigne() < carte.getNbColonnes()) return true;
 		else return false;
+	}
+	
+	public double calculDistance(Case destination) {
+		double a = this.position.getLigne() - destination.getLigne();
+		double b = this.position.getColonne() - destination.getColonne();
+		return Math.sqrt(a*a + b*b);
+	}
+	
+	public double  getDureeDeplacement(Case destination) {
+		double d = this.calculDistance(destination);
+		return d/this.getVitesse(this.position.getNature());
 	}
 	
 	public double getDebit() {

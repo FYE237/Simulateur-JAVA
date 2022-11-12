@@ -13,11 +13,13 @@ import tpl.NatureTerrain;
  */
 public class RobotAPatte extends Robot {
 	
+	
+	
 	public RobotAPatte (Case position) {
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		this.vitesse = 30;
-		this.debit = 10;
 		this.volumeReservoir=Integer.MAX_VALUE;
+		this.debit = 10;
 	}
 	
 	public RobotAPatte (Case position, double vitesse) {
@@ -31,16 +33,19 @@ public class RobotAPatte extends Robot {
 		this.volumeReservoir=2000;
 	}
 	
+	//fye
 	@Override
-	public void setPosition(Case position) {
+	public void setPosition(Carte carte,Case position) {
 		// TODO Auto-generated method stub
-		if(position.getNature() != NatureTerrain.EAU &&
-				position.getNature() != NatureTerrain.ROCHE	) {
-			this.position = new Case(position.getLigne(),position.getColonne(),
-										position.getNature());
-		}
-		if(position.getNature() == NatureTerrain.FORET) {
-			this.vitesse= this.vitesse*0.5;
+		if(checkPosition(carte, position)) {
+			if(position.getNature() != NatureTerrain.EAU &&
+					position.getNature() != NatureTerrain.ROCHE	) {
+				this.position = new Case(position.getLigne(),position.getColonne(),
+											position.getNature());
+			}
+			if(position.getNature() == NatureTerrain.FORET) {
+				this.vitesse= this.vitesse*0.5;
+			}
 		}
 		
 	}
@@ -54,13 +59,12 @@ public class RobotAPatte extends Robot {
 	@Override
 	public void deverserEau() {
 		// TODO Auto-generated method stub
-			this.volumeReservoir -= this.debit;
+		 this.volumeReservoir -=this.debit;
 	}
 
 	@Override
 	public void remplirReservoir(Carte carte) {
 		// TODO Auto-generated method stub
-		this.volumeReservoir=Integer.MAX_VALUE;
 	}
 
 }
