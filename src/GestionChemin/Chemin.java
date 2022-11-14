@@ -3,10 +3,13 @@
  */
 package GestionChemin;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 import tpl.Carte;
 import tpl.Case;
+import tpl.Direction;
 
 import robot.Robot;
 
@@ -22,7 +25,7 @@ public class Chemin {
 	 */
 	protected Robot robot;
 	protected Case  destination;
-	protected HashMap<Long, Case> chemin;
+	protected ArrayList<Case> chemin;
 	protected Carte carte;
 	
 	public Chemin(Robot robot, Case destination , Carte carte) {
@@ -30,8 +33,58 @@ public class Chemin {
 		this.robot = robot;
 		this.destination = destination;
 		this.carte = carte;
+		
 	}
 	
+	public ArrayList<Case> getChemin() {
+		return chemin;
+	}
+	
+	public double getCheminOptimal() {
+		
+		ArrayList<Case> P = new ArrayList<Case>();
+		int nbl = this.carte.getNbLignes(); 
+		int nbc = this.carte.getNbColonnes();
+		double t[] = new double[nbl*nbc];
+		int pred[] = new int[nbl*nbc];
+		double min,tim;
+		Case c = null;
+		
+		Direction[] directions = {Direction.NORD,Direction.SUD,Direction.EST,Direction.OUEST};
+		Arrays.fill(t, Double.MAX_VALUE);
+		t[this.robot.getPosition().getLigne()*nbc+this.robot.getPosition().getColonne()] = 0;
+		
+		while(P.size() < nbc*nbl) {
+			min = Double.MAX_VALUE;
+			for(int i = 0;i<nbc*nbl;i++) {
+				if(!P.contains(this.carte.getCase(i/nbc, i%nbc))) {
+					if(t[i]<=min) {
+						min = t[i];
+						c = this.carte.getCase(i/nbc, i%nbc);
+					}
+				}
+			}
+			P.add(c);
+			tim = this.carte.getTailleCases()/this.robot.getVitesse(c.getNature());
+			for(Direction dir : directions) {
+				if(this.carte.voisinExiste(c, dir)) {
+					if(!P.contains(this.carte.getVoisin(c, dir))) {
+						if(t[this.carte.getVoisin(c, dir).getLigne()*nbc+this.carte.getVoisin(c, dir).getColonne()]>t[c.getLigne()*nbc+c.getColonne()] + tim) {
+							t[this.carte.getVoisin(c, dir).getLigne()*nbc+this.carte.getVoisin(c, dir).getColonne()] = t[c.getLigne()*nbc+c.getColonne()] + tim;
+							pred[this.carte.getVoisin(c, dir).getLigne()*nbc+this.carte.getVoisin(c, dir).getColonne()] = c.getLigne()*nbc+c.getColonne();
+						}
+					}
+				}
+			}
+		}
+		int i = this.destination.getLigne()*nbc+this.destination.getColonne();
+		System.out.print("("+i/nbc+","+i%nbc+")<--");
+		while(i!=this.robot.getPosition().getLigne()*nbc+this.robot.getPosition().getColonne()) {
+			System.out.print("("+pred[i]/nbc+","+pred[i]%nbc+")<--");
+			i = pred[i];
+		}
+		return t[this.destination.getLigne()*nbc+this.destination.getColonne()];
+	}
 	
 	
 

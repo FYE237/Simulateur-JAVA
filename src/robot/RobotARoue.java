@@ -16,6 +16,7 @@ public class RobotARoue  extends Robot{
 
 	
 	public RobotARoue (Case position) {
+		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		this.vitesse = 80;
 		this.volumeReservoir=5000;
@@ -35,8 +36,7 @@ public class RobotARoue  extends Robot{
 		if(checkPosition(carte, position)) {
 				if(position.getNature() == NatureTerrain.TERRAIN_LIBRE ||
 						position.getNature() == NatureTerrain.HABITAT	) {
-					this.position = new Case(position.getLigne(),position.getColonne(),
-												position.getNature());
+					this.position = carte.getCase(position.getLigne(), position.getColonne());
 				}
 			}
 	}

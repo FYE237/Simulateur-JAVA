@@ -16,6 +16,7 @@ public class RobotAPatte extends Robot {
 	
 	
 	public RobotAPatte (Case position) {
+		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		this.vitesse = 30;
 		this.volumeReservoir=Integer.MAX_VALUE;
@@ -38,14 +39,13 @@ public class RobotAPatte extends Robot {
 	public void setPosition(Carte carte,Case position) {
 		// TODO Auto-generated method stub
 		if(checkPosition(carte, position)) {
-			if(position.getNature() != NatureTerrain.EAU &&
-					position.getNature() != NatureTerrain.ROCHE	) {
-				this.position = new Case(position.getLigne(),position.getColonne(),
-											position.getNature());
+			if(position.getNature() != NatureTerrain.EAU) {
+				this.position = carte.getCase(position.getLigne(), position.getColonne());
 			}
-			if(position.getNature() == NatureTerrain.FORET) {
-				this.vitesse= this.vitesse*0.5;
-			}
+//			if(position.getNature() == NatureTerrain.FORET) {
+//				this.vitesse= this.vitesse*0.5;
+//			}
+			this.vitesse = getVitesse(position.getNature());
 		}
 		
 	}
@@ -53,6 +53,9 @@ public class RobotAPatte extends Robot {
 	@Override
 	public double getVitesse(NatureTerrain nature) {
 		// TODO Auto-generated method stub
+		if(position.getNature() == NatureTerrain.FORET) {
+			this.vitesse= 10;
+		}
 		return this.vitesse;
 	}
 

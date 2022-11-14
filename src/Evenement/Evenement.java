@@ -2,6 +2,7 @@ package Evenement;
 
 import robot.Robot;
 import tpl.Carte;
+import tpl.StatutRobot;
 
 public abstract class Evenement {
 
@@ -9,9 +10,11 @@ public abstract class Evenement {
 	protected Robot robot;
 	protected  Carte carte;
 	
-//	public Evenement(long date) {
-//		// TODO Auto-generated constructor stub
-//	}
+	public Evenement(Robot robot,long date) {
+		// TODO Auto-generated constructor stub
+		this.robot = robot;
+		this.robot.setStatut(StatutRobot.occupe);
+	}
 
 	public abstract long getDate() ;
 

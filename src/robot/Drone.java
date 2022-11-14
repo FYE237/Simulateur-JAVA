@@ -15,6 +15,7 @@ public class Drone extends Robot{
 	
 	
 	public Drone(Case position) {
+		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		this.vitesse = 100 ;
 		this.volumeReservoir=10000;
@@ -36,7 +37,7 @@ public class Drone extends Robot{
 	public void setPosition(Carte carte , Case position) {
 		
 		if(checkPosition(carte, position))	
-			this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
+			this.position = carte.getCase(position.getLigne(), position.getColonne());
 
 	}
 	

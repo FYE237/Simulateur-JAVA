@@ -1,5 +1,6 @@
 package robot;
 
+
 import tpl.Carte;
 import tpl.Case;
 import tpl.Direction;
@@ -8,6 +9,7 @@ import tpl.NatureTerrain;
 public class RobotAChenille extends Robot {
 	
 	public RobotAChenille (Case position) {
+		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		this.vitesse = 60;
 		this.volumeReservoir=2000;
@@ -32,18 +34,21 @@ public class RobotAChenille extends Robot {
 		if(checkPosition(carte, position)) {
 			if(position.getNature() != NatureTerrain.EAU &&
 					position.getNature() != NatureTerrain.ROCHE	) {
-				this.position = new Case(position.getLigne(),position.getColonne(),
-											position.getNature());
+				this.position = carte.getCase(position.getLigne(), position.getLigne());
 			}
-			if(position.getNature() == NatureTerrain.FORET) {
-				this.vitesse= this.vitesse*0.5;
-			}
+//			if(position.getNature() == NatureTerrain.FORET) {
+//				this.vitesse= this.vitesse*0.5;
+//			}
+			this.vitesse = getVitesse(position.getNature());
 		}
 	}
 
 	@Override
 	public double getVitesse(NatureTerrain nature) {
 		// TODO Auto-generated method stub
+		if(position.getNature() == NatureTerrain.FORET) {
+			this.vitesse= this.vitesse*0.5;
+		}
 		return this.vitesse;
 	}
 

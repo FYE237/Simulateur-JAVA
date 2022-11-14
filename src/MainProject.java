@@ -15,7 +15,7 @@ public class MainProject {
 //            System.out.println("Syntaxe: java TestLecteurDonnees <nomDeFichier>");
 //            System.exit(1);
 //        }
-		String nomfichier = "codeEtudiants/cartes/carteSujet.map";
+		String nomfichier = "cartes/carteSujet.map";
 		//System.out.println("Working Directory = " + System.getProperty("user.dir")); 
         try {
             DonneesSimulation d = LecteurDonnees.creeDonnees(nomfichier);

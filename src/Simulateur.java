@@ -3,6 +3,7 @@ import gui.Rectangle;
 import gui.Simulable;
 import gui.Text;
 import robot.Robot;
+import Evenement.*;
 import tpl.*;
 
 import java.awt.*;
@@ -45,7 +46,7 @@ public class Simulateur implements Simulable {
 	private Iterator<Integer> yIterator;
 
 	/**Date ou étape courante de la simulation**/
-	private long dateSimuation = 0;
+	private long dateSimulation = 0;
 
 	/*Liste d'évènements à exéccuter*/
 	private ArrayList<Evenement> events = new ArrayList<Evenement>();
@@ -127,10 +128,14 @@ public class Simulateur implements Simulable {
 	}
 	@Override
 	public void next() {
-		if (this.xIterator.hasNext())
-			this.x = this.xIterator.next();
-		if (this.yIterator.hasNext())
-			this.y = this.yIterator.next();
+		if(!simulationTerminee()){
+			this.events.get((int) dateSimulation).execute();
+			incrementeDate();
+		}
+//		if (this.xIterator.hasNext())
+//			this.x = this.xIterator.next();
+//		if (this.yIterator.hasNext())
+//			this.y = this.yIterator.next();
 		draw();
 
 	}
@@ -172,19 +177,19 @@ public class Simulateur implements Simulable {
 	}
 
 	/*Ajouter un evènement*/
-	private void ajouteEvenement(Evenement e){
+	public void ajouteEvenement(Evenement e){
 		this.events.add(e);
 	}
 
 	/*Verifie si la simulation est terminée*/
 	private boolean simulationTerminee(){
-		return this.dateSimuation == this.events.size();
+		return this.dateSimulation == this.events.size();
 	}
 
 	/*Incremente la date de la simulation*/
 	private void incrementeDate(){
 		if(!simulationTerminee()) {
-			this.dateSimuation += 1;
+			this.dateSimulation += 1;
 		}
 	}
 

@@ -20,8 +20,7 @@ public class RemplirRobot extends Evenement {
 	
 	public RemplirRobot(long date , Robot robot,Carte carte) {
 		// TODO Auto-generated constructor stub
-		this.date = date;
-		this.robot = robot;
+		super(robot,date);
 		this.carte = carte;
 	}
 

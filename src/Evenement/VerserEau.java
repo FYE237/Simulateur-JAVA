@@ -26,9 +26,9 @@ public class VerserEau extends Evenement {
 	
 	public VerserEau(long date , Incendie destination, Robot robot) {
 		// TODO Auto-generated constructor stub
-		this.date = date;
+		super(robot,date);
 		this.incendie = destination;
-		this.robot = robot;
+
 	}
 
 

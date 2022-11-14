@@ -4,15 +4,31 @@ package robot;
 import tpl.Carte;
 import tpl.Case;
 import tpl.NatureTerrain;
+import tpl.StatutRobot;
+
+
 
 public abstract class Robot {
 	protected Case position;
 	protected int volumeReservoir;
 	protected double vitesse;
 	protected double debit;
+	protected StatutRobot statut;
 
+	public Robot() {
+		this.statut = StatutRobot.disponible;
+	}
+	
 	public Case getPosition() {
 		return position;
+	}
+
+	public StatutRobot getStatut() {
+		return statut;
+	}
+
+	public void setStatut(StatutRobot statut) {
+		this.statut = statut;
 	}
 
 	public abstract void setPosition(Carte carte,Case position) ;

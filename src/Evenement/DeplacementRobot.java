@@ -11,8 +11,7 @@ public class DeplacementRobot extends Evenement {
 	
 	public DeplacementRobot(long date,Case dest,Robot robot,Carte carte ) {
 		// TODO Auto-generated constructor stub
-		this.robot = robot;
-		this.date = date;
+		super(robot,date);
 		this.carte =carte;
 		this.caseCible = new Case(dest.getLigne(), dest.getColonne(), dest.getNature());
 	}
