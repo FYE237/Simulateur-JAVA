@@ -2,6 +2,8 @@ import gui.GUISimulator;
 import gui.Rectangle;
 import gui.Simulable;
 import gui.Text;
+import gui.ImageElement;
+import gui.Oval;
 import robot.Robot;
 import Evenement.*;
 import tpl.*;
@@ -152,29 +154,12 @@ public class Simulateur implements Simulable {
 	private void draw(){
 		gui.reset();
 		setTailleCase();
+		//this.tailleCase = 60;
 		drawCarte(donneesSimulation.getCarte());
 		drawListeIncendies(donneesSimulation.getIncendies());
 		drawListeRobot(donneesSimulation.getRobots());
 	}
 
-
-
-
-	/**
-	 * Dessiner une case
-	 * @param cote
-	 * @param colors
-	 * @param abscisse
-	 * @param ordonnee
-	 */
-	private void drawCase(int cote, Color colors, int abscisse, int ordonnee){
-		for(int j=0; j<cote;  j+=10) {
-			for (int i = 0; i < cote; i += 10) {
-				gui.addGraphicalElement(new gui.Rectangle(abscisse + i, ordonnee + j, colors, colors, 10));
-			}
-		}
-
-	}
 
 	/*Ajouter un evènement*/
 	public void ajouteEvenement(Evenement e){
@@ -201,25 +186,7 @@ public class Simulateur implements Simulable {
 	private void drawListeIncendies(ArrayList<Incendie> incendies){
 		for(Incendie incendie : incendies){
 			if(incendie.getIntensite() != 0) {
-				drawIncendie(this.tailleCase / 2, Color.red, incendie.getPosition().getLigne() * this.tailleCase, incendie.getPosition().getColonne() * this.tailleCase);
-			}
-		}
-	}
-
-
-	/**
-	 * Dessiner un incendie
-	 * @param cote
-	 * @param colors
-	 * @param abscisse
-	 * @param ordonnee
-	 */
-
-	private void drawIncendie(int cote, Color colors, int abscisse, int ordonnee){
-		//gui.reset();
-		for(int j=0; j<cote;  j+=10) {
-			for (int i = 0; i < cote; i += 10) {
-				gui.addGraphicalElement(new Rectangle(abscisse + i + this.tailleCase/4, ordonnee + j + this.tailleCase/4, colors, colors, 10));
+				gui.addGraphicalElement(new Rectangle( (incendie.getPosition().getColonne()+1) * this.tailleCase,(incendie.getPosition().getLigne()+1) * this.tailleCase, Color.red, Color.red, 6*this.tailleCase/8));
 			}
 		}
 	}
@@ -232,10 +199,12 @@ public class Simulateur implements Simulable {
 	private void drawCarte(Carte carte){
 		for(int i = 0; i < carte.getNbLignes(); i++){
 			for(int j = 0; j< carte.getNbColonnes(); j++){
-				drawCase(this.tailleCase, getColorTerrain(carte.getCase(i,j).getNature()),this.tailleCase*i, this.tailleCase*j );
+				gui.addGraphicalElement(new gui.Rectangle( this.tailleCase*(j+1) ,this.tailleCase*(i+1) , Color.black, getColorTerrain(carte.getCase(i,j).getNature()),this.tailleCase));
 			}
 		}
 	}
+
+
 
 
 	/**
@@ -274,22 +243,18 @@ public class Simulateur implements Simulable {
 	 */
 	private void drawRobot(Robot robot, Color color, String name) {
 
-		for(int j=0; j<this.tailleCase/2;  j+=10) {
-			for (int i = 0; i < this.tailleCase/2; i += 10) {
-				gui.addGraphicalElement(new Rectangle(robot.getPosition().getLigne()*this.tailleCase + i + this.tailleCase/4, robot.getPosition().getColonne()*this.tailleCase + j + this.tailleCase/4, color, color, 10));
-			}
-		}
-		gui.addGraphicalElement(new Text(robot.getPosition().getLigne()*this.tailleCase + tailleCase/2 , robot.getPosition().getColonne()*this.tailleCase  + this.tailleCase/2 , Color.black, name));
+		gui.addGraphicalElement(new Oval((robot.getPosition().getColonne()+1)*this.tailleCase, (robot.getPosition().getLigne()+1)*this.tailleCase,color,color,this.tailleCase/2));
+		gui.addGraphicalElement(new Text( (robot.getPosition().getColonne()+1)*this.tailleCase, (robot.getPosition().getLigne()+1)*this.tailleCase , Color.black, name));
 
 	}
 
 	/** calcul de la taille d'une case */
 	public void setTailleCase(){
 		if(800 / donneesSimulation.getCarte().getNbColonnes() < 600 / donneesSimulation.getCarte().getNbLignes()){
-			this.tailleCase = 800 / donneesSimulation.getCarte().getNbColonnes();
+			this.tailleCase = 800 / (donneesSimulation.getCarte().getNbColonnes() +1);
 		}
 		else{
-			this.tailleCase = 600 / donneesSimulation.getCarte().getNbLignes();
+			this.tailleCase = 600 /( donneesSimulation.getCarte().getNbLignes() +1);
 		}
 	}
 

@@ -5,7 +5,7 @@ package GestionChemin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.Collections;
 
 import tpl.Carte;
 import tpl.Case;
@@ -47,6 +47,7 @@ public class Chemin {
 		int nbc = this.carte.getNbColonnes();
 		double t[] = new double[nbl*nbc];
 		int pred[] = new int[nbl*nbc];
+		ArrayList<Case> chemininverse = new ArrayList<Case>();
 		double min,tim;
 		Case c = null;
 		
@@ -79,10 +80,14 @@ public class Chemin {
 		}
 		int i = this.destination.getLigne()*nbc+this.destination.getColonne();
 		System.out.print("("+i/nbc+","+i%nbc+")<--");
+		chemininverse.add(this.carte.getCase(i/nbc, i%nbc));
 		while(i!=this.robot.getPosition().getLigne()*nbc+this.robot.getPosition().getColonne()) {
 			System.out.print("("+pred[i]/nbc+","+pred[i]%nbc+")<--");
+			chemininverse.add(this.carte.getCase(i/nbc, i%nbc));
 			i = pred[i];
 		}
+		Collections.reverse(chemininverse);
+		this.chemin= chemininverse;
 		return t[this.destination.getLigne()*nbc+this.destination.getColonne()];
 	}
 	
