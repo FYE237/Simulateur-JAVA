@@ -13,7 +13,7 @@ public class DeplacementRobot extends Evenement {
 		// TODO Auto-generated constructor stub
 		super(robot,date);
 		this.carte =carte;
-		this.caseCible = new Case(dest.getLigne(), dest.getColonne(), dest.getNature());
+		this.caseCible = carte.getCase(dest.getLigne(), dest.getColonne());
 	}
 
 	@Override
@@ -25,7 +25,13 @@ public class DeplacementRobot extends Evenement {
 	@Override
 	public void execute() {
 		// TODO Auto-generated method stub
-		this.robot.setPosition(carte,caseCible);
+		this.robot.setPosition(this.carte,this.caseCible);
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + "caseCible=" + caseCible;
+	}
+	
+	
 }

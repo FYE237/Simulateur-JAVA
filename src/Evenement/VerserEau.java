@@ -44,9 +44,9 @@ public class VerserEau extends Evenement {
 		// TODO Auto-generated method stub
 		robot.deverserEau();
 		int tmp =  (int) (this.incendie.getIntensite() - this.robot.getDebit());
-		System.out.println("intensite: "+this.incendie.getIntensite());
-		System.out.println("debit: "+this.robot.getDebit());
-		System.out.println("tmp: "+tmp);
+//		System.out.println("intensite: "+this.incendie.getIntensite());
+//		System.out.println("debit: "+this.robot.getDebit());
+//		System.out.println("tmp: "+tmp);
 		if( tmp < 0) {
 			this.incendie.setIntensite(0);
 		}

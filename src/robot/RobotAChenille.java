@@ -17,6 +17,7 @@ public class RobotAChenille extends Robot {
 	}
 	
 	public RobotAChenille (Case position, double vitesse) {
+		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		if (vitesse > 80 ) {
 			this.vitesse = 80 ;
@@ -34,7 +35,7 @@ public class RobotAChenille extends Robot {
 		// TODO Auto-generated method stub
 		if(checkPosition(carte, position)) {
 			if(position.getNature() != NatureTerrain.EAU && position.getNature() != NatureTerrain.ROCHE	) {
-				this.position = carte.getCase(position.getLigne(), position.getLigne());
+				this.position = carte.getCase(position.getLigne(), position.getColonne());
 			}
 		}
 	}

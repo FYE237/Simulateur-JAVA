@@ -24,6 +24,7 @@ public class RobotARoue  extends Robot{
 	}
 	
 	public RobotARoue (Case position, double vitesse) {
+		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		this.vitesse = vitesse;
 		this.volumeReservoir=5000;

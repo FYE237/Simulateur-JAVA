@@ -68,16 +68,20 @@ public class Simulateur implements Simulable {
 	 */
 	@Override
 	public void next() {
-		System.out.println("Next");
+		//System.out.println("Next0");
 		if(!simulationTerminee()){
-			System.out.println("Next - ok");
+			//System.out.println("Next - ok");
 			if(this.events.containsKey(this.dateSimulation)) {
 				System.out.println("Next - ok ok");
 				for(Evenement event : this.events.get(this.dateSimulation)) {
 					System.out.println("Exécution");
-					System.out.println(this.donneesSimulation.getIncendies().get(1).getIntensite());
+					System.out.println(event);
+					//System.out.println(this.donneesSimulation.getIncendies().get(1).getIntensite());
 					event.execute();
-					System.out.println(this.donneesSimulation.getIncendies().get(1).getIntensite());
+					for(Robot robot: this.donneesSimulation.getRobots()) {
+						System.out.println(robot);
+					}
+					//System.out.println(this.donneesSimulation.getIncendies().get(1).getIntensite());
 				}
 			}
 			incrementeDate();
@@ -112,10 +116,12 @@ public class Simulateur implements Simulable {
 
 	/*Ajouter un evènement*/
 	public void ajouteEvenement(Evenement e){
+		//System.out.println(e.toString());//fye
 		if(!this.events.containsKey(e.getDate())) {
 			this.events.put(e.getDate(), new ArrayList<Evenement>());
 		}
 		this.events.get(e.getDate()).add(e);
+		
 	}
 
 	/*Verifie si la simulation est terminée*/

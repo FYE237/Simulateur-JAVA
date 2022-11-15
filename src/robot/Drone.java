@@ -23,6 +23,7 @@ public class Drone extends Robot{
 	}
 	
 	public Drone(Case position, double vitesse) {
+		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		if (vitesse > 150 ) {
 			this.vitesse = 150 ;

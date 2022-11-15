@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import robot.Drone;
 import robot.Robot;
 import robot.RobotAChenille;
+import robot.RobotAPatte;
+import robot.RobotARoue;
 
 public class DonneesSimulation {
 	private Carte carte ;
@@ -46,13 +48,17 @@ public class DonneesSimulation {
 		}
 		for(Robot robot: this.robots) {
 			switch(robot.getClass().toString()) {
-				case "robot.Drone":
+				case "class robot.Drone":
 					d.addRobots(new Drone(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
-				case "robot.RobotAChenille":
+				case "class robot.RobotAChenille":
 					d.addRobots(new RobotAChenille(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
+				case "class robot.RobotAPatte":
+					d.addRobots(new RobotAPatte(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
+			default:
+					d.addRobots(new RobotARoue(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
 			}
 		}
-		return this;
+		return d; 
 	}
 	
 	@Override

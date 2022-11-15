@@ -81,13 +81,15 @@ public class Chemin {
 			}
 		}
 		int i = this.destination.getLigne()*nbc+this.destination.getColonne();
-		while(i!=this.robot.getPosition().getLigne()*nbc+this.robot.getPosition().getColonne()) {
-			chemininverse.add(this.carte.getCase(i/nbc, i%nbc));
-			i = pred[i];
+		if(t[this.destination.getLigne()*nbc+this.destination.getColonne()] != Double.MAX_VALUE) {
+			while(i!=this.robot.getPosition().getLigne()*nbc+this.robot.getPosition().getColonne()) {
+				chemininverse.add(this.carte.getCase(i/nbc, i%nbc));
+				i = pred[i];
+			}
+			Collections.reverse(chemininverse);
+			chemininverse.remove(chemininverse.size()-1);
+			this.chemin= chemininverse;
 		}
-		Collections.reverse(chemininverse);
-		chemininverse.remove(chemininverse.size()-1);
-		this.chemin= chemininverse;
 		return t[this.destination.getLigne()*nbc+this.destination.getColonne()];
 	}
 	

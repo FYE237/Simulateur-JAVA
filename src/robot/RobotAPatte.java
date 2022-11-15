@@ -24,6 +24,7 @@ public class RobotAPatte extends Robot {
 	}
 	
 	public RobotAPatte (Case position, double vitesse) {
+		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		if (vitesse > 80 ) {
 			this.vitesse = 80 ;

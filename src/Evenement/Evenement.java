@@ -16,8 +16,17 @@ public abstract class Evenement {
 		this.date = date;
 		this.robot.setStatut(StatutRobot.occupe);
 	}
+		
+	public Robot getRobot() {
+		return robot;
+	}
 
 	public abstract long getDate() ;
 
 	public  abstract  void execute();
+	
+	@Override
+	public String toString() {
+		return this.getClass().toString()+" "+ this.robot.toString() + " date : " + this.date; 
+	}
 }
