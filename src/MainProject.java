@@ -1,6 +1,9 @@
 
 import io.LecteurDonnees;
+import tpl.Case;
 import tpl.DonneesSimulation;
+import Evenement.*;
+import GestionChemin.Chemin;
 
 import java.awt.Color;
 import java.io.FileNotFoundException;
@@ -21,6 +24,18 @@ public class MainProject {
             DonneesSimulation d = LecteurDonnees.creeDonnees(nomfichier);
             GUISimulator gui = new GUISimulator(800, 600, Color.BLACK);
             Simulateur sim = new Simulateur(gui, d);
+//            sim.ajouteEvenement(new DeplacementRobot(0,d.getCarte().getCase(7, 1), d.getRobots().get(0),d.getCarte()));
+//            sim.ajouteEvenement(new VerserEau(1,d.getIncendies().get(1),d.getRobots().get(0)));
+//            sim.ajouteEvenement(new DeplacementRobot(2,d.getCarte().getCase(0, 0), d.getRobots().get(0),d.getCarte()));
+            Chemin chemin = new Chemin(d.getRobots().get(0),d.getCarte().getCase(0, 0),d.getCarte());
+            System.out.println("Temps optimal: "+chemin.getCheminOptimal());
+            for(Case cas: chemin.getChemin()) {
+            	System.out.println(cas);
+            }
+            for (long name: sim.getEvents().keySet()) {
+                String value = sim.getEvents().get(name).toString();
+                System.out.println(name + " " + value);
+            }
         } catch (FileNotFoundException e) {
             System.out.println("fichier " + nomfichier + " inconnu ou illisible");
         } catch (DataFormatException e) {

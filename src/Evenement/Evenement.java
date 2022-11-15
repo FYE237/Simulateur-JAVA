@@ -13,6 +13,7 @@ public abstract class Evenement {
 	public Evenement(Robot robot,long date) {
 		// TODO Auto-generated constructor stub
 		this.robot = robot;
+		this.date = date;
 		this.robot.setStatut(StatutRobot.occupe);
 	}
 

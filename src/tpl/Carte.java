@@ -1,5 +1,7 @@
 package tpl;
 
+import Evenement.Evenement;
+
 public class Carte {
 	private int nbLignes;
 	private int nbColonnes;
@@ -63,6 +65,16 @@ public class Carte {
 		}
 	}
 
+	public Carte copy() {
+		Carte c = new Carte(this.nbLignes,this.nbColonnes,this.tailleCases);
+		for(int i = 0; i<this.nbLignes; i++) {
+			for(int j = 0; j<this.nbLignes; j++) {
+				c.setCase(i, j, new Case(i,j,this.getCase(i, j).getNature()));
+			}
+		}
+		return c;
+	}
+	
 	@Override
 	public String toString() {
 		return "Carte [nbLignes=" + nbLignes + ", nbColonnes=" + nbColonnes + ", tailleCases=" + tailleCases + "]";

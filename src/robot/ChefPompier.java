@@ -3,10 +3,16 @@
  */
 package robot;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import Evenement.DeplacementRobot;
+import Evenement.Evenement;
 import Evenement.VerserEau;
 import GestionChemin.Chemin;
 import tpl.*;
@@ -24,8 +30,9 @@ public class ChefPompier {
 	
 	protected DonneesSimulation donneesSimulation;
 	protected long date;
-	//protected List<Incendie> listeIncedie;
-	//protected Set<Robot> listeRobot;
+	protected Map<Robot, Long> ListeRobot = new HashMap<Robot, Long>();
+	protected List<Evenement> ListeEvenement = new ArrayList<Evenement>();
+	protected DonneesSimulation copie = donneesSimulation.copy();
 	
 	//La carte doit contenir une liste des incendies , une liste des robots
 	//Il faut ajouter une methode update carte qui change l'état de  la liste des robots ou celles des incendies
@@ -36,23 +43,63 @@ public class ChefPompier {
 		// TODO Auto-generated constructor stub
 		this.donneesSimulation = donnee;
 		this.date =0;
+		for (Robot robot : copie.getRobots()) {
+			ListeRobot.put(robot, (long)0);
+		}
+
 
 	}
 	
+	public long minTime() {
+		if(ListeRobot.size() == 0) return 0;
+		else {
+			long min = Collections.min(ListeRobot.values());
+			return min;
+		}
+		
+	}
+	
 	public void parcourListeIncendie() {
-		for (Incendie incendie : donneesSimulation.getIncendies()) {
+		long date = 0;
+		for (Incendie incendie : copie.getIncendies()) {
 			if(incendie.getStatut() == StatutIncendie.allume) {
-				for(Robot robot : donneesSimulation.getRobots()) {
-					if(robot.getStatut() == StatutRobot.disponible)  {
-						Chemin chemin = new Chemin(robot, incendie.getPosition(), donneesSimulation.getCarte());
-						chemin.getCheminOptimal();
-						for (Case c : chemin.getChemin()) {
+				int positionIncendie = copie.getIncendies().indexOf(incendie);
+				this.date = minTime();
+				for(Robot robot : copie.getRobots()) {
+					date = this.date;
+					int position = copie.getRobots().indexOf(robot);
+					if(this.date >= ListeRobot.get(robot) && robot.getStatut() == StatutRobot.disponible)  {
+						if(robot.volumeReservoir != 0) {
+							Chemin chemin = new Chemin(robot, incendie.getPosition(), donneesSimulation.getCarte());
+							chemin.getCheminOptimal();
 							
+							for (Case c : chemin.getChemin()) {
+								new DeplacementRobot(date, c, robot,donneesSimulation.getCarte() ).execute();
+								ListeEvenement.add(new DeplacementRobot(date, c, donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
+								date += 1;//robot.getDureeDeplacement(c, donneesSimulation.getCarte());
+							}
+							if(robot.getClass() == Drone.class) {
+								new DeplacementRobot(date, incendie.getPosition(), robot,donneesSimulation.getCarte() ).execute();
+								ListeEvenement.add(new DeplacementRobot(date, donneesSimulation.getIncendies().get(positionIncendie).getPosition(), donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
+								date += 1;//robot.getDureeDeplacement(incendie.getPosition(), donneesSimulation.getCarte());
+							}
+							while(robot.volumeReservoir != 0 || incendie.getIntensite() != 0) {
+								new VerserEau(date, incendie, robot).execute();
+								ListeEvenement.add(new VerserEau(date, donneesSimulation.getIncendies().get(positionIncendie), donneesSimulation.getRobots().get(position)));//On verse de l'eau 
+								date = date+ 1;//robot.timeViderReservoir();
+							}
+							ListeRobot.put(robot, date);
+							if(robot.volumeReservoir == 0) {
+								donneesSimulation.getRobots().get(position).statut =StatutRobot.occupe;
+								robot.statut = StatutRobot.occupe;
+							}
 						}
-						
-						
-					}
+					
 				}
+				if(incendie.getIntensite() == 0) {
+					break;
+				}
+			 }
 			}
 		}
 		

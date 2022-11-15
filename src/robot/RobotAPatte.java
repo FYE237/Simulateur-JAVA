@@ -32,6 +32,7 @@ public class RobotAPatte extends Robot {
 				this.vitesse = vitesse;
 			}
 		this.volumeReservoir=2000;
+		this.debit = 10;
 	}
 	
 	//fye
@@ -42,10 +43,6 @@ public class RobotAPatte extends Robot {
 			if(position.getNature() != NatureTerrain.EAU) {
 				this.position = carte.getCase(position.getLigne(), position.getColonne());
 			}
-//			if(position.getNature() == NatureTerrain.FORET) {
-//				this.vitesse= this.vitesse*0.5;
-//			}
-			this.vitesse = getVitesse(position.getNature());
 		}
 		
 	}
@@ -54,10 +51,11 @@ public class RobotAPatte extends Robot {
 	public double getVitesse(NatureTerrain nature) {
 		// TODO Auto-generated method stub
 		if(position.getNature() == NatureTerrain.FORET) {
-			this.vitesse= 10;
+			return 10.0;
 		}
 		return this.vitesse;
 	}
+	
 
 	@Override
 	public void deverserEau() {

@@ -20,11 +20,11 @@ public abstract class Robot {
 	}
 	
 	public Case getPosition() {
-		return position;
+		return this.position;
 	}
 
 	public StatutRobot getStatut() {
-		return statut;
+		return this.statut;
 	}
 
 	public void setStatut(StatutRobot statut) {
@@ -56,12 +56,13 @@ public abstract class Robot {
 	}
 	
 	public double getDebit() {
-		return debit;
+		return this.debit;
 	}
 
 	@Override
 	public String toString() {
-		return "Robot [position=" + position + ", volumeReservoir=" + volumeReservoir + ", vitesse=" + vitesse + "]\n";
+		return "Robot [position=" + position + ", volumeReservoir=" + volumeReservoir + ", vitesse=" + vitesse
+				+ ", debit=" + debit + ", statut=" + statut + "]";
 	}
 	
 }

@@ -9,7 +9,9 @@ import Evenement.*;
 import tpl.*;
 
 import java.awt.*;
+import java.awt.image.ImageObserver;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,24 +36,12 @@ public class Simulateur implements Simulable {
 	/** Taille de la case */
 	private int tailleCase ;
 
-	/** abscisses courant  */
-	private int x;
-
-	/** ordonnee courant */
-	private int y;
-
-
-	/** Itérateur sur les abcisses du robot au cours du temps */
-	private Iterator<Integer> xIterator;
-
-	/** Itérateur sur les ordonnées du robot au cours du temps */
-	private Iterator<Integer> yIterator;
 
 	/**Date ou étape courante de la simulation**/
 	private long dateSimulation = 0;
 
-	/*Liste d'évènements à exéccuter*/
-	private ArrayList<Evenement> events = new ArrayList<Evenement>();
+	/*Liste d'évènements à exécuter*/
+	private HashMap<Long, List<Evenement>> events = new HashMap<>();
 
 	/**
 	 * Crée un robot et le dessine.
@@ -76,68 +66,22 @@ public class Simulateur implements Simulable {
 	 * @param ordonneeFinal
 	 * @param taillecase
 	 */
-	private void planCoordinates(int abscisseInitial, int abscisseFinal, int ordonneeInitial, int ordonneeFinal, int taillecase) {
-		// panel must be large enough... unchecked here!
-		// total invader size: height == 120, width == 80
-
-		int xInitial = abscisseInitial * taillecase;
-		int yInitial = ordonneeInitial * taillecase;
-		int xFinal = abscisseFinal * taillecase;
-		int yFinal = ordonneeFinal * taillecase;
-
-		// let's plan the invader displacement!
-		java.util.List<Integer> xCoords = new ArrayList<Integer>();
-		List<Integer> yCoords = new ArrayList<Integer>();
-
-		// going right
-		if(xInitial < xFinal){
-			for (int x = xInitial; x <= xFinal; x += taillecase/10) {
-				xCoords.add(x);
-				yCoords.add(yInitial);
-			}
-		}
-
-		// going left
-		if(xInitial > xFinal){
-			for (int x = xInitial; x >= xFinal; x -= taillecase/10) {
-				xCoords.add(x);
-				yCoords.add(yInitial);
-			}
-		}
-
-		// going down
-		if(yInitial < yFinal){
-			for (int y = yInitial; y <= yFinal; y += taillecase/10) {
-				xCoords.add(xFinal);
-				yCoords.add(y);
-			}
-		}
-
-		// going up
-		if(yInitial > yFinal){
-			for (int y = yInitial; y >= yFinal; y -= taillecase/10) {
-				xCoords.add(xFinal);
-				yCoords.add(y);
-			}
-		}
-
-
-		this.xIterator = xCoords.iterator();
-		this.yIterator = yCoords.iterator();
-		// current position
-		this.x = xInitial;
-		this.y = yInitial;
-	}
 	@Override
 	public void next() {
+		System.out.println("Next");
 		if(!simulationTerminee()){
-			this.events.get((int) dateSimulation).execute();
+			System.out.println("Next - ok");
+			if(this.events.containsKey(this.dateSimulation)) {
+				System.out.println("Next - ok ok");
+				for(Evenement event : this.events.get(this.dateSimulation)) {
+					System.out.println("Exécution");
+					System.out.println(this.donneesSimulation.getIncendies().get(1).getIntensite());
+					event.execute();
+					System.out.println(this.donneesSimulation.getIncendies().get(1).getIntensite());
+				}
+			}
 			incrementeDate();
 		}
-//		if (this.xIterator.hasNext())
-//			this.x = this.xIterator.next();
-//		if (this.yIterator.hasNext())
-//			this.y = this.yIterator.next();
 		draw();
 
 	}
@@ -154,21 +98,34 @@ public class Simulateur implements Simulable {
 	private void draw(){
 		gui.reset();
 		setTailleCase();
-		//this.tailleCase = 60;
 		drawCarte(donneesSimulation.getCarte());
 		drawListeIncendies(donneesSimulation.getIncendies());
 		drawListeRobot(donneesSimulation.getRobots());
+	}
+	
+	
+
+	public HashMap<Long, List<Evenement>> getEvents() {
+		return events;
 	}
 
 
 	/*Ajouter un evènement*/
 	public void ajouteEvenement(Evenement e){
-		this.events.add(e);
+		if(!this.events.containsKey(e.getDate())) {
+			this.events.put(e.getDate(), new ArrayList<Evenement>());
+		}
+		this.events.get(e.getDate()).add(e);
 	}
 
 	/*Verifie si la simulation est terminée*/
 	private boolean simulationTerminee(){
-		return this.dateSimulation == this.events.size();
+		boolean flag = true;
+		List<Long> dates = new ArrayList<Long>(this.events.keySet());
+		for(long date : dates) {
+			flag = flag && (this.dateSimulation>date);
+		}
+		return flag;
 	}
 
 	/*Incremente la date de la simulation*/
@@ -179,6 +136,25 @@ public class Simulateur implements Simulable {
 	}
 
 
+	
+	ImageObserver obs = new ImageObserver() {
+		public boolean imageUpdate(Image image, int flags, int x, int y, int width, int height) {
+			if ((flags & HEIGHT) != 0)
+				//System.out.println("Image height = " + height);
+			if ((flags & WIDTH) != 0)
+				//System.out.println("Image width = " + width);
+			if ((flags & FRAMEBITS) != 0)
+				System.out.println("Another frame finished.");
+			if ((flags & SOMEBITS) != 0)
+				//System.out.println("Image section :" + new Rectangle(x, y, width, height));
+			if ((flags & ALLBITS) != 0)
+				//System.out.println("Image finished!");
+			if ((flags & ABORT) != 0)
+				System.out.println("Image load aborted...");
+			return true;
+		}
+	};
+	
 	/**
 	 * Dessiner la liste des incendies
 	 * @param incendies
@@ -186,11 +162,11 @@ public class Simulateur implements Simulable {
 	private void drawListeIncendies(ArrayList<Incendie> incendies){
 		for(Incendie incendie : incendies){
 			if(incendie.getIntensite() != 0) {
-				gui.addGraphicalElement(new Rectangle( (incendie.getPosition().getColonne()+1) * this.tailleCase,(incendie.getPosition().getLigne()+1) * this.tailleCase, Color.red, Color.red, 6*this.tailleCase/8));
+				gui.addGraphicalElement(new gui.ImageElement( (incendie.getPosition().getColonne()+1) * this.tailleCase  + this.tailleCase/16,(incendie.getPosition().getLigne()+1) * this.tailleCase  + this.tailleCase/16, "ressources/feu.png",7*this.tailleCase/8,7*this.tailleCase/8,this.obs));
+
 			}
 		}
 	}
-
 
 	/**
 	 * Dessiner la carte
@@ -199,7 +175,9 @@ public class Simulateur implements Simulable {
 	private void drawCarte(Carte carte){
 		for(int i = 0; i < carte.getNbLignes(); i++){
 			for(int j = 0; j< carte.getNbColonnes(); j++){
-				gui.addGraphicalElement(new gui.Rectangle( this.tailleCase*(j+1) ,this.tailleCase*(i+1) , Color.black, getColorTerrain(carte.getCase(i,j).getNature()),this.tailleCase));
+				//gui.addGraphicalElement(new gui.Rectangle( this.tailleCase*(j+1) ,this.tailleCase*(i+1) , Color.black, getColorTerrain(carte.getCase(i,j).getNature()),this.tailleCase));
+				gui.addGraphicalElement(new gui.ImageElement( this.tailleCase*(j+1),this.tailleCase*(i+1), getFileNameTerrain(carte.getCase(i,j).getNature()),this.tailleCase,this.tailleCase,this.obs));
+
 			}
 		}
 	}
@@ -216,37 +194,26 @@ public class Simulateur implements Simulable {
 
 			switch(robot.getClass().getName()){
 				case "robot.Drone":
-					drawRobot(robot,Color.cyan, "DR");
+					gui.addGraphicalElement(new gui.ImageElement( (robot.getPosition().getColonne()+1) * this.tailleCase  + this.tailleCase/8,(robot.getPosition().getLigne()+1) * this.tailleCase  + this.tailleCase/8, "ressources/drone.png",6*this.tailleCase/8,6*this.tailleCase/8,this.obs));
+					//drawRobot(robot,Color.cyan, "DR");
 					break;
 				case "robot.RobotAChenille":
-					drawRobot(robot, Color.pink, "RAC");
+					gui.addGraphicalElement(new gui.ImageElement( (robot.getPosition().getColonne()+1) * this.tailleCase  + this.tailleCase/8,(robot.getPosition().getLigne()+1) * this.tailleCase  + this.tailleCase/8, "ressources/robotAchenille.png",6*this.tailleCase/8,6*this.tailleCase/8,this.obs));
 					break;
 				case "robot.RobotAPatte":
-					drawRobot(robot, Color.magenta, "RAP");
+					gui.addGraphicalElement(new gui.ImageElement( (robot.getPosition().getColonne()+1) * this.tailleCase  + this.tailleCase/8,(robot.getPosition().getLigne()+1) * this.tailleCase  + this.tailleCase/8, "ressources/robotApatte.png",6*this.tailleCase/8,6*this.tailleCase/8,this.obs));
 					break;
 				case "robot.RobotARoue":
-					drawRobot(robot, Color.lightGray, "RAR");
+					gui.addGraphicalElement(new gui.ImageElement( (robot.getPosition().getColonne()+1) * this.tailleCase  + this.tailleCase/8,(robot.getPosition().getLigne()+1) * this.tailleCase  + this.tailleCase/8, "ressources/robotAroue.png",6*this.tailleCase/8,6*this.tailleCase/8,this.obs));
 					break;
 				default:
-					drawRobot(robot, Color.black,"RAS");
+					gui.addGraphicalElement(new gui.ImageElement( (robot.getPosition().getColonne()+1) * this.tailleCase  + this.tailleCase/8,(robot.getPosition().getLigne()+1) * this.tailleCase  + this.tailleCase/8, "ressources/robotAroue.png",6*this.tailleCase/8,6*this.tailleCase/8,this.obs));
 
 			}
 		}
 	}
 
 
-	/**
-	 * Dessine un robot.
-	 * @param robot
-	 * @param color
-	 * @param name
-	 */
-	private void drawRobot(Robot robot, Color color, String name) {
-
-		gui.addGraphicalElement(new Oval((robot.getPosition().getColonne()+1)*this.tailleCase, (robot.getPosition().getLigne()+1)*this.tailleCase,color,color,this.tailleCase/2));
-		gui.addGraphicalElement(new Text( (robot.getPosition().getColonne()+1)*this.tailleCase, (robot.getPosition().getLigne()+1)*this.tailleCase , Color.black, name));
-
-	}
 
 	/** calcul de la taille d'une case */
 	public void setTailleCase(){
@@ -258,25 +225,26 @@ public class Simulateur implements Simulable {
 		}
 	}
 
+
 	/**
 	 * rechercher la couleur d'un terrain
 	 * @param nature
 	 * @return
 	 */
-	private Color getColorTerrain(NatureTerrain nature){
+	private String getFileNameTerrain(NatureTerrain nature){
 		switch (nature){
 			case EAU:
-				return Color.BLUE;
+				return "ressources/eau.png";
 			case FORET:
-				return Color.green;
+				return "ressources/foret.png";
 			case ROCHE:
-				return Color.gray;
+				return "ressources/roche.png";
 			case HABITAT:
-				return Color.orange;
+				return "ressources/habitat.png";
 			case TERRAIN_LIBRE:
-				return Color.white;
+				return "ressources/terrain_libre.png";
 			default:
-				return Color.black;
+				return "ressources/terrain_libre.png";
 
 		}
 	}

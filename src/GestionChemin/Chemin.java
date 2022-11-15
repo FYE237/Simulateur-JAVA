@@ -66,27 +66,27 @@ public class Chemin {
 				}
 			}
 			P.add(c);
-			tim = this.carte.getTailleCases()/this.robot.getVitesse(c.getNature());
-			for(Direction dir : directions) {
-				if(this.carte.voisinExiste(c, dir)) {
-					if(!P.contains(this.carte.getVoisin(c, dir))) {
-						if(t[this.carte.getVoisin(c, dir).getLigne()*nbc+this.carte.getVoisin(c, dir).getColonne()]>t[c.getLigne()*nbc+c.getColonne()] + tim) {
-							t[this.carte.getVoisin(c, dir).getLigne()*nbc+this.carte.getVoisin(c, dir).getColonne()] = t[c.getLigne()*nbc+c.getColonne()] + tim;
-							pred[this.carte.getVoisin(c, dir).getLigne()*nbc+this.carte.getVoisin(c, dir).getColonne()] = c.getLigne()*nbc+c.getColonne();
+			if(this.robot.getVitesse(c.getNature())>0){
+				tim = this.carte.getTailleCases()/this.robot.getVitesse(c.getNature());
+				for(Direction dir : directions) {
+					if(this.carte.voisinExiste(c, dir)) {
+						if(!P.contains(this.carte.getVoisin(c, dir))) {
+							if(t[this.carte.getVoisin(c, dir).getLigne()*nbc+this.carte.getVoisin(c, dir).getColonne()]>t[c.getLigne()*nbc+c.getColonne()] + tim) {
+								t[this.carte.getVoisin(c, dir).getLigne()*nbc+this.carte.getVoisin(c, dir).getColonne()] = t[c.getLigne()*nbc+c.getColonne()] + tim;
+								pred[this.carte.getVoisin(c, dir).getLigne()*nbc+this.carte.getVoisin(c, dir).getColonne()] = c.getLigne()*nbc+c.getColonne();
+							}
 						}
 					}
 				}
 			}
 		}
 		int i = this.destination.getLigne()*nbc+this.destination.getColonne();
-		System.out.print("("+i/nbc+","+i%nbc+")<--");
-		chemininverse.add(this.carte.getCase(i/nbc, i%nbc));
 		while(i!=this.robot.getPosition().getLigne()*nbc+this.robot.getPosition().getColonne()) {
-			System.out.print("("+pred[i]/nbc+","+pred[i]%nbc+")<--");
 			chemininverse.add(this.carte.getCase(i/nbc, i%nbc));
 			i = pred[i];
 		}
 		Collections.reverse(chemininverse);
+		chemininverse.remove(chemininverse.size()-1);
 		this.chemin= chemininverse;
 		return t[this.destination.getLigne()*nbc+this.destination.getColonne()];
 	}

@@ -27,6 +27,7 @@ public class RobotARoue  extends Robot{
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
 		this.vitesse = vitesse;
 		this.volumeReservoir=5000;
+		this.debit = 100;
 	}
 	
 	//fye
@@ -44,7 +45,12 @@ public class RobotARoue  extends Robot{
 	@Override
 	public double getVitesse(NatureTerrain nature) {
 		// TODO Auto-generated method stub
-		return this.vitesse;
+		if(nature == NatureTerrain.TERRAIN_LIBRE || nature == NatureTerrain.HABITAT	) {
+			return this.vitesse;
+		}
+		else {
+			return 0.0;
+		}
 	}
 
 	@Override

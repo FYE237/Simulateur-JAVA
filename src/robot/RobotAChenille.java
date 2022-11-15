@@ -25,6 +25,7 @@ public class RobotAChenille extends Robot {
 				this.vitesse = vitesse;
 			}
 		this.volumeReservoir=2000;
+		this.debit = 100;
 	}
 	
 	//fye
@@ -32,14 +33,9 @@ public class RobotAChenille extends Robot {
 	public void setPosition(Carte carte,Case position) {
 		// TODO Auto-generated method stub
 		if(checkPosition(carte, position)) {
-			if(position.getNature() != NatureTerrain.EAU &&
-					position.getNature() != NatureTerrain.ROCHE	) {
+			if(position.getNature() != NatureTerrain.EAU && position.getNature() != NatureTerrain.ROCHE	) {
 				this.position = carte.getCase(position.getLigne(), position.getLigne());
 			}
-//			if(position.getNature() == NatureTerrain.FORET) {
-//				this.vitesse= this.vitesse*0.5;
-//			}
-			this.vitesse = getVitesse(position.getNature());
 		}
 	}
 
@@ -47,7 +43,10 @@ public class RobotAChenille extends Robot {
 	public double getVitesse(NatureTerrain nature) {
 		// TODO Auto-generated method stub
 		if(position.getNature() == NatureTerrain.FORET) {
-			this.vitesse= this.vitesse*0.5;
+			return this.vitesse*0.5;
+		}
+		if(nature == NatureTerrain.EAU || nature == NatureTerrain.ROCHE	) {
+			return 0.0;
 		}
 		return this.vitesse;
 	}

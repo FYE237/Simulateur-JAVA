@@ -31,6 +31,7 @@ public class Drone extends Robot{
 				this.vitesse = vitesse;
 			}
 		this.volumeReservoir=10000;
+		this.debit = 10000;
 	}
 	
 	//fye
