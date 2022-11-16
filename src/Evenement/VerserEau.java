@@ -6,24 +6,23 @@ package Evenement;
 import robot.Robot;
 import tpl.Incendie;
 
-/**
- * @author fezeuyoe
- *	Il s'agit de l'évenement verser de l'eau
- */
+
 public class VerserEau extends Evenement {
 
-	/**
-	 * Il y a l'attribut date de la superclasse
-	 * Robot position du robot qui doit verser de l'eau
+	/*
 	 * Incendie c'est l'incendie à eteindre
 	 * 
 	 */
-	
 
 	private Incendie incendie;
-	
-	
-	
+
+
+	/**
+	 * 
+	 * @param date
+	 * @param destination
+	 * @param robot
+	 */
 	public VerserEau(long date , Incendie destination, Robot robot) {
 		// TODO Auto-generated constructor stub
 		super(robot,date);
@@ -44,9 +43,6 @@ public class VerserEau extends Evenement {
 		// TODO Auto-generated method stub
 		robot.deverserEau();
 		int tmp =  (int) (this.incendie.getIntensite() - this.robot.getDebit());
-//		System.out.println("intensite: "+this.incendie.getIntensite());
-//		System.out.println("debit: "+this.robot.getDebit());
-//		System.out.println("tmp: "+tmp);
 		if( tmp < 0) {
 			this.incendie.setIntensite(0);
 		}
@@ -54,6 +50,6 @@ public class VerserEau extends Evenement {
 			this.incendie.setIntensite(tmp);
 		}
 	}
-	
+
 
 }

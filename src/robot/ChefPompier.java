@@ -22,38 +22,59 @@ import tpl.*;
  */
 public class ChefPompier {
 
-	
-	
+
+	//Variable qui contient les données de simulation
 	protected DonneesSimulation donneesSimulation;
+
+	//Variable date
 	protected long date;
+
+	//Map qui contient les robots ainsi que la date de son dernier evenement
 	protected Map<Robot, Long> ListeRobot = new HashMap<Robot, Long>();
+
+	//Une liste des evements qui doivent s'executer
 	protected List<Evenement> ListeEvenement = new ArrayList<Evenement>();
+
+	//Une copie des données de simulation sur laquelle nous effectuons nos différents calculs
 	protected DonneesSimulation copie;
+
+	//Une liste des différents poitns d'eau présents sur notre carte
 	protected List<Case> pointsEau = new ArrayList<Case>();
-	
-	//La carte doit contenir une liste des incendies , une liste des robots
-	//Il faut ajouter une methode update carte qui change l'état de  la liste des robots ou celles des incendies
-	//Il faut aussi ajouter un champ attribué à la classe incendie
-	//Il faut aussi ajouter un champ  occupe à la classe robot qui permet de savoir s'il est en train de realiser un evenement ou pas
-	
+
+
+
 	/**
 	 * 
-	 * @param donnee
+	 * @param donnee : Donnée de simulation
 	 */
 	public ChefPompier(DonneesSimulation donnee) {
 		// TODO Auto-generated constructor stub
 		this.donneesSimulation = donnee;
 		this.date =0;
+
+		//On crée une copie des données de simulation
 		copie = donneesSimulation.copy();
+
+		//On stocke l'ensemble de tous les points d'eau de notre carte
 		pointsEau = donneesSimulation.getPointsEau();
-		//fye //copie.getRobots().forEach(robot -> System.out.println(robot.statut));
+
+		//Onn initialise notre Map avec des couples (Robot, 0) 
 		for (Robot robot : copie.getRobots()) {
 			ListeRobot.put(robot, (long)0);
 		}
 	}
-	
-	static Case pointEauOptimal;
-	
+
+
+	/**
+	 * Cette variable stocke pour un robot à une date t  le point d'eau le plus proche de lui
+	 */
+	static Case pointEauOptimal; 
+
+	/**
+	 * 
+	 * @param robot
+	 * @return Le chemin optimal vers la source d'eau la plus proche pour un robot
+	 */
 	public List<Case> getPointEauPProche(Robot robot) {
 		double min = Double.MAX_VALUE;
 		// !!!!!
@@ -65,129 +86,209 @@ public class ChefPompier {
 			if(tmp < min) {
 				min =tmp;
 				cheminmin = chem;
-				pointEauOptimal = dest;
+				pointEauOptimal = dest;//la case du point d'eau le plus proche
 			}
 		}
-		System.out.println("Chemin opt pour eau"+cheminmin.getChemin());
+
+		//On retourne un chemin vers cette case
 		return cheminmin.getChemin();
 	}
-	
+
+	/**
+	 * 
+	 * @return  List<Evenement>
+	 * Retourne la liste des evenements à executer
+	 */
 	public List<Evenement> getListeEvenement() {
 		return this.ListeEvenement;
 	}
-	
+
+
+	/**
+	 * Methode qui calcule le plus petit temps parmi les differents temps des evenements effectués par nos robots dans 
+	 * la Map listeRobot
+	 */
 	public long minTime() {
 		if(ListeRobot.size() == 0) return 0;
 		else {
 			long min = Collections.min(ListeRobot.values());
 			return min;
 		}
-		
+
 	}
-	
+
+
+	/**
+	 * Methode qui parcour la liste des incendies, et definie une stratégie d'affectation des robots pour pouvoir 
+	 * éteindre ces incendies de facon optimale 
+	 */
 	public void parcourListeIncendie() {
+		//Un compteur de temps 
 		long date = 0;
+
+		//Un chemin
 		Chemin chemin;
+
+		//Durée d'un deplacement
 		double timedeplacement;
-		Boolean checkIncendie = true;
-			
+
+
+		//Parcours de la liste des incendies
 		for (Incendie incendie : copie.getIncendies()) {
-			if(incendie.getStatut() == StatutIncendie.allume) {						
+
+			//Lorsqu'on trouve un feu allumé
+			if(incendie.getStatut() == StatutIncendie.allume) {	
+
+				//On stocke la position de ce feu dans la liste des incendie
 				int positionIncendie = copie.getIncendies().indexOf(incendie);
-				
+
+				// n =nombre de robots, i : compteur sur la liste de robots 
 				int n = copie.getRobots().size(),i=0;
-					//for(Robot robot : copie.getRobots()) {
-					while(incendie.getIntensite() != 0) {
+
+				//Tant que l'incendie n'est pas éteint
+				while(incendie.getIntensite() != 0) {
+
+					//La date courante est le min de toutes les dates des evenements effectué par les robots à l'étape précedente
 					this.date = minTime();
-					Robot robot = copie.getRobots().get(i);
-					if(ListeRobot.containsKey(robot)) {
-						date = this.date;
-						int position = i;
-						System.out.println("11");
-						System.out.println(robot);
-						System.out.println(this.date);
-						System.out.println(ListeRobot.get(robot));
-						System.out.println(this.date >= ListeRobot.get(robot));
-						System.out.println(robot.getStatut() == StatutRobot.disponible);
-						if(this.date >= ListeRobot.get(robot) /*&& robot.getStatut() == StatutRobot.disponible*/)  {
-							System.out.println("22");
-							if(robot.volumeReservoir != 0) {
-								System.out.println("33");
-								chemin = new Chemin(robot, incendie.getPosition(), donneesSimulation.getCarte());
-								timedeplacement = chemin.getCheminOptimal();
-								if(timedeplacement != Double.MAX_VALUE) {
-										for (Case c : chemin.getChemin()) {
-											new DeplacementRobot(date, c, robot,donneesSimulation.getCarte() ).execute();
-											ListeEvenement.add(new DeplacementRobot(date, c, donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
-											date += 1;//robot.getDureeDeplacement(c, donneesSimulation.getCarte());
-										}
-										if(robot.getClass() == Drone.class) {
-											new DeplacementRobot(date, incendie.getPosition(), robot,donneesSimulation.getCarte() ).execute();
-											ListeEvenement.add(new DeplacementRobot(date, donneesSimulation.getIncendies().get(positionIncendie).getPosition(), donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
-											date += 1;//robot.getDureeDeplacement(incendie.getPosition(), donneesSimulation.getCarte());
-										}
 
-											while(robot.volumeReservoir != 0 && incendie.getIntensite() != 0) {
-												new VerserEau(date, incendie, robot).execute();
-												ListeEvenement.add(new VerserEau(date, donneesSimulation.getIncendies().get(positionIncendie),donneesSimulation.getRobots().get(position)));//On verse de l'eau 
-												date = date+ 1;//robot.timeViderReservoir();
-											}
-											ListeRobot.put(robot, date);
+					Robot robot = copie.getRobots().get(i);//On recuperer le robot i da la liste des robots
+					date = this.date;
+					int position = i;
 
-//										ListeRobot.put(robot, date);
-										if(robot.volumeReservoir != 0) {
-											donneesSimulation.getRobots().get(position).statut =StatutRobot.disponible;
-											robot.statut = StatutRobot.disponible;
-										}else {
-											//ListeRobot.remove(robot);
-											List<Case> cheminPointEauPProche = this.getPointEauPProche(robot); 
-											for (Case c : cheminPointEauPProche) {
-												new DeplacementRobot(date, c, robot,donneesSimulation.getCarte() ).execute();
-												ListeEvenement.add(new DeplacementRobot(date, c, donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
-												date += 1;//robot.getDureeDeplacement(c, donneesSimulation.getCarte());
-											}
-											if(robot.getClass() == Drone.class) {
-												new DeplacementRobot(date, pointEauOptimal, robot,donneesSimulation.getCarte() ).execute();
-												ListeEvenement.add(new DeplacementRobot(date, pointEauOptimal, donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
-												date += 1;
-											}
-											new RemplirRobot(date, robot, donneesSimulation.getCarte()).execute();
-											ListeEvenement.add(new RemplirRobot(date, donneesSimulation.getRobots().get(position), donneesSimulation.getCarte()));
-											date +=1;
-											ListeRobot.put(robot, date);	
-										}
-									}
-								else {
-									ListeRobot.put(robot, this.date+1);
-									System.out.println(robot + "ne peut pas atteindre "+ incendie.getPosition());
-								}
-							}else {
-								List<Case> cheminPointEauPProche = this.getPointEauPProche(robot); 
-								for (Case c : cheminPointEauPProche) {
-									new DeplacementRobot(date, c, robot,donneesSimulation.getCarte() ).execute();
-									ListeEvenement.add(new DeplacementRobot(date, c, donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
-									date += 1;//robot.getDureeDeplacement(c, donneesSimulation.getCarte());
-								}
-								if(robot.getClass() == Drone.class) {
-									new DeplacementRobot(date, pointEauOptimal, robot,donneesSimulation.getCarte() ).execute();
-									ListeEvenement.add(new DeplacementRobot(date, pointEauOptimal, donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
-									date += 1;
-								}
-								new RemplirRobot(date, robot, donneesSimulation.getCarte()).execute();
-								ListeEvenement.add(new RemplirRobot(date, donneesSimulation.getRobots().get(position), donneesSimulation.getCarte()));
-								date +=1;
+					/*
+					 * On s'assure qu'un robot est disponible. Donc il n'est pas en train d'être utilisé par un évenement. Donc la date de son dernier evenement
+					 * doit être <= à la date courante
+					 *	
+					 */
+
+					if(this.date >= ListeRobot.get(robot) )  {
+
+						//Si le reservoi du robot n'est pas vide
+						if(robot.volumeReservoir != 0) { 
+
+							chemin = new Chemin(robot, incendie.getPosition(), donneesSimulation.getCarte());
+
+							//Calcul du chemin optimal pour deplacer notre robot de sa case jusqu'à la position de l'incendie
+							timedeplacement = chemin.getCheminOptimal();
+
+							//Si on a pu trouvé un chemin optimal (Si le robot a pu se déplacer)
+							if(timedeplacement != Double.MAX_VALUE) {
+
+								date = this.executeSuiteEvenement(chemin, position, robot, incendie, positionIncendie);
+								//Mise à jour date de dernier évenement de notre robot
 								ListeRobot.put(robot, date);
+
+
+								if(robot.volumeReservoir != 0) {
+
+									donneesSimulation.getRobots().get(position).statut =StatutRobot.disponible;
+									robot.statut = StatutRobot.disponible;
+
+								}
+								else {
+
+									/*
+									 * Si son réservoir est vide, notre robot doit aller se remplir
+									 * Calcul de chemin à parcourir pour aller au point d'eau le plus proche
+									 */
+
+									List<Case> cheminPointEauPProche = this.getPointEauPProche(robot); 
+
+									date = this.executeSerieEvenement(date, cheminPointEauPProche, robot, position);
+									ListeRobot.put(robot, date);	
+								}
 							}
+							else {
+								ListeRobot.put(robot, this.date+1);
+							}
+						}
+						else { //Si le reservoir du robot est vide
+							List<Case> cheminPointEauPProche = this.getPointEauPProche(robot); 
+
+							date = executeSerieEvenement(date, cheminPointEauPProche, robot, position);
+							ListeRobot.put(robot, date);
+						}
 					}
+
+					if(incendie.getIntensite() == 0) {
+						break;
+					}
+					//On passe au prochain robot;
+					i = (i+1)%n;
 				}
-				if(incendie.getIntensite() == 0) {
-					break;
-				}
-				i = (i+1)%n;
-			 }
 			}
 		}	
 	}
-	
+
+	/**
+	 * 
+	 * @param date
+	 * @param cheminPointEauPProche :Chemin vers les points d'eau les plus proches d'un robot
+	 * @param robot
+	 * @param position : position du robot dans la copie de notre liste des robots
+	 * @return date : La date à laquelle cette série d'evenement se termine
+	 */
+	public long executeSerieEvenement(long date,List<Case> cheminPointEauPProche,Robot robot,int position) {
+		for (Case c : cheminPointEauPProche) {
+			//On execute la suite de deplacement pour suivre le chemin calculé
+			new DeplacementRobot(date, c, robot,donneesSimulation.getCarte() ).execute();
+			ListeEvenement.add(new DeplacementRobot(date, c, donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
+			date += 1;
+
+		}
+		//Si c'est un drone il y a déplacement supplémentaire pour se mettre au dessus de la case destination
+		if(robot.getClass() == Drone.class) {
+
+			new DeplacementRobot(date, pointEauOptimal, robot,donneesSimulation.getCarte() ).execute();
+			ListeEvenement.add(new DeplacementRobot(date, pointEauOptimal, donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
+			date += 1;
+
+		}
+
+		//Le robot se remplit
+		new RemplirRobot(date, robot, donneesSimulation.getCarte()).execute();
+		ListeEvenement.add(new RemplirRobot(date, donneesSimulation.getRobots().get(position), donneesSimulation.getCarte()));
+		date +=1;
+
+		return date;
+	}
+
+	/**
+	 * 
+	 * @param chemin : Un chemin ie une suite de case 
+	 * @param position
+	 * @param robot
+	 * @param incendie
+	 * @param positionIncendie
+	 * @return date : La date à laquelle cette série d'evenement se termine
+	 */
+	public long executeSuiteEvenement(Chemin chemin,int position, Robot robot,Incendie incendie,int positionIncendie) {
+		for (Case c : chemin.getChemin()) { // Parcours de la liste des cases de notre chemin
+
+			new DeplacementRobot(date, c, robot,donneesSimulation.getCarte() ).execute();
+			ListeEvenement.add(new DeplacementRobot(date, c, donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
+			date += 1;
+
+		}
+
+		if(robot.getClass() == Drone.class) {
+
+			new DeplacementRobot(date, incendie.getPosition(), robot,donneesSimulation.getCarte() ).execute();
+			ListeEvenement.add(new DeplacementRobot(date, donneesSimulation.getIncendies().get(positionIncendie).getPosition(), donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
+			date += 1;
+
+		}
+		/*
+		 * Tant que son reservoir n'est pas vide ou que le feu n'a pas été eteint	
+		 */
+		while(robot.volumeReservoir != 0 && incendie.getIntensite() != 0) { 
+			new VerserEau(date, incendie, robot).execute();
+			ListeEvenement.add(new VerserEau(date, donneesSimulation.getIncendies().get(positionIncendie),donneesSimulation.getRobots().get(position)));//On verse de l'eau 
+			date = date+ 1;
+		}
+
+		return date;
+	}
+
 
 }

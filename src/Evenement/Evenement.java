@@ -10,6 +10,11 @@ public abstract class Evenement {
 	protected Robot robot;
 	protected  Carte carte;
 	
+	/**
+	 * 
+	 * @param robot : Robot sur lequel s'éffectue l'évenement
+	 * @param date  : Date à laquelle s'execute l'évenement
+	 */
 	public Evenement(Robot robot,long date) {
 		// TODO Auto-generated constructor stub
 		this.robot = robot;

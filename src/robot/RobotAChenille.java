@@ -8,6 +8,10 @@ import tpl.NatureTerrain;
 
 public class RobotAChenille extends Robot {
 	
+	/**
+	 * 
+	 * @param position : C'est la case sur laquelle le robot se trouve
+	 */
 	public RobotAChenille (Case position) {
 		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
@@ -16,6 +20,11 @@ public class RobotAChenille extends Robot {
 		this.debit = 100;
 	}
 	
+	/**
+	 * 
+	 * @param position : Case sur laquelle se trouve le robot
+	 * @param vitesse 
+	 */
 	public RobotAChenille (Case position, double vitesse) {
 		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
@@ -36,7 +45,7 @@ public class RobotAChenille extends Robot {
 		this.volumeReservoir = 2000;
 	}
 	
-	//fye
+
 	@Override
 	public void setPosition(Carte carte,Case position) {
 		// TODO Auto-generated method stub
@@ -70,35 +79,35 @@ public class RobotAChenille extends Robot {
 		}
 	}
 
-	//fye
+	/**
+	 * @param carte : La carte 
+	 */
 	@Override
 	public void remplirReservoir(Carte carte) {
 
-
+		/*
+		 * Pour ce robot il se met à côté d'une case proche de l'eau pour se remplir. On vérifie si le voisin exite ensuite on verifie
+		 * si ce voisin est un terrain d'eau. Puis on change la valeur du réservoir
+		 */
 		if(carte.voisinExiste(this.getPosition(), Direction.NORD)) 
 		{
-			System.out.println("AAAAAZD");
 		   if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU ) 
 			   this.volumeReservoir = 2000;
 		}
 		if(carte.voisinExiste(this.getPosition(), Direction.SUD)) {
-			System.out.println("AAAAAZC");
 			if(carte.getVoisin(this.position, Direction.SUD).getNature() == NatureTerrain.EAU )
 				this.volumeReservoir = 2000;
 		}
 		if(carte.voisinExiste(this.getPosition(), Direction.OUEST)) {
-			System.out.println("AAAAAZB");
 			if(carte.getVoisin(this.position, Direction.OUEST).getNature() == NatureTerrain.EAU )
 				this.volumeReservoir = 2000;
 		}
 		if(carte.voisinExiste(this.getPosition(), Direction.EST)) {
-			System.out.println("AAAAAZA");
 			if(carte.getVoisin(this.position, Direction.EST).getNature() == NatureTerrain.EAU )
 				this.volumeReservoir = 2000;
 			
 		}
-		// TODO Auto-generated method stub
-		System.out.println("***** " + this);
+		
 	}
 
 }

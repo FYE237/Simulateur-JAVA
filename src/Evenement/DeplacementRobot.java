@@ -9,6 +9,13 @@ public class DeplacementRobot extends Evenement {
 	
 	protected Case caseCible;
 	
+	/**
+	 * 
+	 * @param date	: La date à laquelle l'éévènement s'execute
+	 * @param dest  : La case destination
+	 * @param robot : robot sur lequel le deplacement s'effectue
+	 * @param carte 
+	 */
 	public DeplacementRobot(long date,Case dest,Robot robot,Carte carte ) {
 		// TODO Auto-generated constructor stub
 		super(robot,date);

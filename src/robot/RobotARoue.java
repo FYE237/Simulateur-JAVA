@@ -14,7 +14,10 @@ import tpl.NatureTerrain;
  */
 public class RobotARoue  extends Robot{
 
-	
+	/**
+	 * 
+	 * @param position
+	 */
 	public RobotARoue (Case position) {
 		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
@@ -22,7 +25,12 @@ public class RobotARoue  extends Robot{
 		this.volumeReservoir=5000;
 		this.debit = 100;
 	}
-	
+
+	/**
+	 * 
+	 * @param position
+	 * @param vitesse
+	 */
 	public RobotARoue (Case position, double vitesse) {
 		super();
 		this.position = new  Case(position.getLigne(), position.getColonne(), position.getNature());
@@ -30,19 +38,22 @@ public class RobotARoue  extends Robot{
 		this.volumeReservoir=5000;
 		this.debit = 100;
 	}
-	
-	//fye
+
+	/**
+	 * @param carte
+	 * @param position 
+	 */
 	@Override
 	public void setPosition(Carte carte,Case position) {
 		// TODO Auto-generated method stub
 		if(checkPosition(carte, position)) {
-				if(position.getNature() == NatureTerrain.TERRAIN_LIBRE ||
-						position.getNature() == NatureTerrain.HABITAT	) {
-					this.position = carte.getCase(position.getLigne(), position.getColonne());
-				}
+			if(position.getNature() == NatureTerrain.TERRAIN_LIBRE ||
+					position.getNature() == NatureTerrain.HABITAT	) {
+				this.position = carte.getCase(position.getLigne(), position.getColonne());
 			}
+		}
 	}
-	
+
 	@Override
 	public void setVolumeReservoir(){
 		// TODO Auto-generated method stub
@@ -60,6 +71,9 @@ public class RobotARoue  extends Robot{
 		}
 	}
 
+	/*
+	 *Le robot de l'eau. Si la quantité versée est < au volume restant on passe le volume à 0 
+	 */
 	@Override
 	public void deverserEau() {
 		// TODO Auto-generated method stub
@@ -71,10 +85,16 @@ public class RobotARoue  extends Robot{
 		}
 	}
 
-	//fye
+	/**
+	 * @param carte  La carte 
+	 */
 	@Override
 	public void remplirReservoir(Carte carte) {
-		// TODO Auto-generated method stub
+
+		/*
+		 * Pour ce robot il se met à côté d'une case proche de l'eau pour se remplir. On vérifie si le voisin exite ensuite on verifie
+		 * si ce voisin est un terrain d'eau. Puis on change la valeur du réservoir
+		 */
 		if(carte.voisinExiste(this.getPosition(), Direction.NORD)) 
 		{
 			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU )
