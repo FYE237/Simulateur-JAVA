@@ -72,11 +72,15 @@ public class ChefPompier {
 		for (Incendie incendie : copie.getIncendies()) {
 			if(incendie.getStatut() == StatutIncendie.allume) {						
 				int positionIncendie = copie.getIncendies().indexOf(incendie);
-				this.date = minTime();
-				for(Robot robot : copie.getRobots()) {
+				
+				int n = copie.getRobots().size(),i=0;
+					//for(Robot robot : copie.getRobots()) {
+					while(incendie.getIntensite() != 0) {
+					this.date = minTime();
+					Robot robot = copie.getRobots().get(i);
 					if(ListeRobot.containsKey(robot)) {
 						date = this.date;
-						int position = copie.getRobots().indexOf(robot);
+						int position = i;
 
 						if(this.date >= ListeRobot.get(robot) && robot.getStatut() == StatutRobot.disponible)  {
 							if(robot.volumeReservoir != 0) {
@@ -113,12 +117,17 @@ public class ChefPompier {
 											ListeRobot.remove(robot);
 										}
 									}
+								else {
+									ListeRobot.put(robot, this.date+1);
+									System.out.println(robot + "ne peut pas atteindre "+ incendie.getPosition());
+								}
 							}
 					}
-					}
+				}
 				if(incendie.getIntensite() == 0) {
 					break;
 				}
+				i = (i+1)%n;
 			 }
 			}
 		}	
