@@ -37,6 +37,12 @@ public class RobotAPatte extends Robot {
 		this.debit = 10;
 	}
 	
+	@Override
+	public void setVolumeReservoir(){
+		// TODO Auto-generated method stub
+		this.volumeReservoir = Integer.MAX_VALUE;
+	}
+	
 	//fye
 	@Override
 	public void setPosition(Carte carte,Case position) {

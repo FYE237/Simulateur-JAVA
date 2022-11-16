@@ -29,6 +29,13 @@ public class RobotAChenille extends Robot {
 		this.debit = 100;
 	}
 	
+	
+	@Override
+	public void setVolumeReservoir(){
+		// TODO Auto-generated method stub
+		this.volumeReservoir = 2000;
+	}
+	
 	//fye
 	@Override
 	public void setPosition(Carte carte,Case position) {

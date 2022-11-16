@@ -56,6 +56,12 @@ public class Drone extends Robot{
 		// TODO Auto-generated method stub
 		this.volumeReservoir= 0;
 	}
+	
+	@Override
+	public void setVolumeReservoir(){
+		// TODO Auto-generated method stub
+		this.volumeReservoir = 10000;
+	}
 
 	//fye
 	@Override

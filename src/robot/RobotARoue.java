@@ -42,6 +42,12 @@ public class RobotARoue  extends Robot{
 				}
 			}
 	}
+	
+	@Override
+	public void setVolumeReservoir(){
+		// TODO Auto-generated method stub
+		this.volumeReservoir = 5000;
+	}
 
 	@Override
 	public double getVitesse(NatureTerrain nature) {

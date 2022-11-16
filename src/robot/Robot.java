@@ -37,6 +37,8 @@ public abstract class Robot implements Comparable<Robot>{
 	
 	public abstract void deverserEau();
 	
+	public abstract void setVolumeReservoir();
+	
 	public abstract void remplirReservoir(Carte carte);
 	
 	public boolean checkPosition(Carte carte, Case position) {

@@ -32,6 +32,9 @@ public class Simulateur implements Simulable {
 
 	/** Données de simulation */
 	private DonneesSimulation donneesSimulation;
+	
+	/** Données de sauvegarde*/
+	private DonneesSimulation copie;
 
 	/** Taille de la case */
 	private int tailleCase ;
@@ -53,6 +56,7 @@ public class Simulateur implements Simulable {
 		this.gui = gui;
 		gui.setSimulable(this);				// association a la gui!
 		this.donneesSimulation = d;
+		this.copie = d.copy();
 
 		draw();
 	}
@@ -92,6 +96,8 @@ public class Simulateur implements Simulable {
 
 	@Override
 	public void restart() {
+		RestareDonnées(this.copie);
+		this.dateSimulation = 0;
 		draw();
 	}
 
@@ -254,6 +260,25 @@ public class Simulateur implements Simulable {
 
 		}
 	}
+	
+	private void RestareDonnées(DonneesSimulation copieDonnées){
+
+		for(int i=0; i<this.donneesSimulation.getIncendies().size(); i++){
+			this.donneesSimulation.getIncendies().get(i).setStatut(this.copie.getIncendies().get(i).getStatut());
+			this.donneesSimulation.getIncendies().get(i).setIntensite(this.copie.getIncendies().get(i).getIntensite());
+		}
+
+		/*mise à jour des robot*/
+		for(int i=0; i<this.donneesSimulation.getRobots().size(); i++){
+			this.donneesSimulation.getRobots().get(i).setPosition(this.copie.getCarte(),this.copie.getRobots().get(i).getPosition());
+			this.donneesSimulation.getRobots().get(i).setStatut(this.copie.getRobots().get(i).getStatut());
+			this.donneesSimulation.getRobots().get(i).setVolumeReservoir();
+
+		}
+
+
+	}
+
 
 
 }
