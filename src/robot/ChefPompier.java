@@ -68,65 +68,60 @@ public class ChefPompier {
 		Chemin chemin;
 		double timedeplacement;
 		Boolean checkIncendie = true;
-		//fye
-//		while(checkIncendie) {
-//			checkIncendie = false;
 			
-				for (Incendie incendie : copie.getIncendies()) {
-					if(incendie.getStatut() == StatutIncendie.allume) {
-						//fye
-//						checkIncendie = true;
-						
-						int positionIncendie = copie.getIncendies().indexOf(incendie);
-						this.date = minTime();
-						for(Robot robot : copie.getRobots()) {
-							date = this.date;
-							int position = copie.getRobots().indexOf(robot);
-							 //System.out.println(position+"\n");
-		
-							if(this.date >= ListeRobot.get(robot) && robot.getStatut() == StatutRobot.disponible)  {
-								if(robot.volumeReservoir != 0) {
-									chemin = new Chemin(robot, incendie.getPosition(), donneesSimulation.getCarte());
-									timedeplacement = chemin.getCheminOptimal();
-									if(timedeplacement != Double.MAX_VALUE) {
-											for (Case c : chemin.getChemin()) {
-												new DeplacementRobot(date, c, robot,donneesSimulation.getCarte() ).execute();
-												ListeEvenement.add(new DeplacementRobot(date, c, donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
-												date += 1;//robot.getDureeDeplacement(c, donneesSimulation.getCarte());
-											}
-											if(robot.getClass() == Drone.class) {
-												new DeplacementRobot(date, incendie.getPosition(), robot,donneesSimulation.getCarte() ).execute();
-												ListeEvenement.add(new DeplacementRobot(date, donneesSimulation.getIncendies().get(positionIncendie).getPosition(), donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
-												date += 1;//robot.getDureeDeplacement(incendie.getPosition(), donneesSimulation.getCarte());
-												while(incendie.getIntensite() != 0) {
-													new VerserEau(date, incendie, robot).execute();
-													ListeEvenement.add(new VerserEau(date, donneesSimulation.getIncendies().get(positionIncendie),donneesSimulation.getRobots().get(position)));//On verse de l'eau 
-													date = date+ 1;//robot.timeViderReservoir();
-												}
-											}
-											else {
-												while(robot.volumeReservoir != 0 || incendie.getIntensite() != 0) {
-													new VerserEau(date, incendie, robot).execute();
-													ListeEvenement.add(new VerserEau(date, donneesSimulation.getIncendies().get(positionIncendie),donneesSimulation.getRobots().get(position)));//On verse de l'eau 
-													date = date+ 1;//robot.timeViderReservoir();
-												}
-											}
-											ListeRobot.put(robot, date);
-											if(robot.volumeReservoir != 0) {
-												donneesSimulation.getRobots().get(position).statut =StatutRobot.disponible;
-												robot.statut = StatutRobot.disponible;
+		for (Incendie incendie : copie.getIncendies()) {
+			if(incendie.getStatut() == StatutIncendie.allume) {						
+				int positionIncendie = copie.getIncendies().indexOf(incendie);
+				this.date = minTime();
+				for(Robot robot : copie.getRobots()) {
+					if(ListeRobot.containsKey(robot)) {
+						date = this.date;
+						int position = copie.getRobots().indexOf(robot);
+
+						if(this.date >= ListeRobot.get(robot) && robot.getStatut() == StatutRobot.disponible)  {
+							if(robot.volumeReservoir != 0) {
+								chemin = new Chemin(robot, incendie.getPosition(), donneesSimulation.getCarte());
+								timedeplacement = chemin.getCheminOptimal();
+								if(timedeplacement != Double.MAX_VALUE) {
+										for (Case c : chemin.getChemin()) {
+											new DeplacementRobot(date, c, robot,donneesSimulation.getCarte() ).execute();
+											ListeEvenement.add(new DeplacementRobot(date, c, donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
+											date += 1;//robot.getDureeDeplacement(c, donneesSimulation.getCarte());
+										}
+										if(robot.getClass() == Drone.class) {
+											new DeplacementRobot(date, incendie.getPosition(), robot,donneesSimulation.getCarte() ).execute();
+											ListeEvenement.add(new DeplacementRobot(date, donneesSimulation.getIncendies().get(positionIncendie).getPosition(), donneesSimulation.getRobots().get(position),donneesSimulation.getCarte() ));
+											date += 1;//robot.getDureeDeplacement(incendie.getPosition(), donneesSimulation.getCarte());
+											while(incendie.getIntensite() != 0) {
+												new VerserEau(date, incendie, robot).execute();
+												ListeEvenement.add(new VerserEau(date, donneesSimulation.getIncendies().get(positionIncendie),donneesSimulation.getRobots().get(position)));//On verse de l'eau 
+												date = date+ 1;//robot.timeViderReservoir();
 											}
 										}
-								}
-						}
-						if(incendie.getIntensite() == 0) {
-							break;
-						}
-					 }
+										else {
+											while(robot.volumeReservoir != 0 && incendie.getIntensite() != 0) {
+												new VerserEau(date, incendie, robot).execute();
+												ListeEvenement.add(new VerserEau(date, donneesSimulation.getIncendies().get(positionIncendie),donneesSimulation.getRobots().get(position)));//On verse de l'eau 
+												date = date+ 1;//robot.timeViderReservoir();
+											}
+										}
+										ListeRobot.put(robot, date);
+										if(robot.volumeReservoir != 0) {
+											donneesSimulation.getRobots().get(position).statut =StatutRobot.disponible;
+											robot.statut = StatutRobot.disponible;
+										}else {
+											ListeRobot.remove(robot);
+										}
+									}
+							}
 					}
+					}
+				if(incendie.getIntensite() == 0) {
+					break;
 				}
-	//fye	
-//		}
+			 }
+			}
+		}	
 	}
 	
 

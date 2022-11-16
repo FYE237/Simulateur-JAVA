@@ -61,7 +61,7 @@ public abstract class Robot implements Comparable<Robot>{
 
 	@Override
 	public String toString() {
-		return "Robot [position=" + position + ", volumeReservoir=" + volumeReservoir + ", vitesse=" + vitesse
+		return "Robot"+ this.getClass() +"[position=" + position + ", volumeReservoir=" + volumeReservoir + ", vitesse=" + vitesse
 				+ ", debit=" + debit + ", statut=" + statut + "]";
 	}
 

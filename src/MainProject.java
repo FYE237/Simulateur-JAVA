@@ -23,8 +23,8 @@ public class MainProject {
 //            System.exit(1);
 //        }
 		//String nomfichier = "cartes/carteSujet.map";
-		//String nomfichier = "cartes/desertOfDeath-20x20.map";
-		String nomfichier = "cartes/mushroomOfHell-20x20.map";
+		String nomfichier = "cartes/desertOfDeath-20x20.map";
+		//String nomfichier = "cartes/mushroomOfHell-20x20.map";
 		//String nomfichier = "cartes/spiralOfMadness-50x50.map";
 		//System.out.println("Working Directory = " + System.getProperty("user.dir")); 
         try {

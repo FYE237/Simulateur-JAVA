@@ -87,7 +87,10 @@ public class Chemin {
 				i = pred[i];
 			}
 			Collections.reverse(chemininverse);
-			chemininverse.remove(chemininverse.size()-1);
+			System.out.println(chemininverse);
+			if(chemininverse.size() > 0) {
+				chemininverse.remove(chemininverse.size()-1);
+			}
 			this.chemin= chemininverse;
 		}
 		return t[this.destination.getLigne()*nbc+this.destination.getColonne()];
