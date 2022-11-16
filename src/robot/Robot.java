@@ -8,7 +8,7 @@ import tpl.StatutRobot;
 
 
 
-public abstract class Robot {
+public abstract class Robot implements Comparable<Robot>{
 	protected Case position;
 	protected int volumeReservoir;
 	protected double vitesse;
@@ -64,5 +64,13 @@ public abstract class Robot {
 		return "Robot [position=" + position + ", volumeReservoir=" + volumeReservoir + ", vitesse=" + vitesse
 				+ ", debit=" + debit + ", statut=" + statut + "]";
 	}
+
+	@Override
+	public int compareTo(Robot o) {
+		// TODO Auto-generated method stub
+		return (int) (o.debit-this.debit);
+	}
+	
+	
 	
 }

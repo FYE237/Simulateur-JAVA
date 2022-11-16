@@ -1,6 +1,7 @@
 package tpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import robot.Drone;
 import robot.Robot;
@@ -41,23 +42,25 @@ public class DonneesSimulation {
 		this.robots.add(robot);
 	}
 	
+	public void ranger() {
+		Collections.sort(this.incendies);
+		Collections.sort(this.robots);
+	}
+	
 	public DonneesSimulation copy() {
 		DonneesSimulation d = new DonneesSimulation(this.carte.copy());
 		for(Incendie incendie: this.incendies) {
 			d.addIncendie(new Incendie(d.getCarte().getCase(incendie.getPosition().getLigne(), incendie.getPosition().getColonne()),incendie.getIntensite()));
 		}
 		for(Robot robot: this.robots) {
-			switch(robot.getClass().toString()) {
-				case "class robot.Drone":
-					d.addRobots(new Drone(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
-				case "class robot.RobotAChenille":
-					d.addRobots(new RobotAChenille(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
-				case "class robot.RobotAPatte":
-					d.addRobots(new RobotAPatte(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
-			default:
-					d.addRobots(new RobotARoue(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
-			}
+
+			if(robot.getClass() == Drone.class) d.addRobots(new Drone(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
+			if(robot.getClass() == RobotAChenille.class) d.addRobots(new RobotAChenille(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
+			if(robot.getClass() == RobotAPatte.class) d.addRobots(new RobotAPatte(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
+			if(robot.getClass() == RobotARoue.class) d.addRobots(new RobotARoue(d.getCarte().getCase(robot.getPosition().getLigne(), robot.getPosition().getColonne()),robot.getVitesse(NatureTerrain.TERRAIN_LIBRE)));
+
 		}
+
 		return d; 
 	}
 	

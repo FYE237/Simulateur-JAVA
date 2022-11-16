@@ -4,6 +4,7 @@ import robot.ChefPompier;
 import robot.Drone;
 import tpl.Case;
 import tpl.DonneesSimulation;
+import tpl.Incendie;
 import Evenement.*;
 import GestionChemin.Chemin;
 
@@ -21,10 +22,16 @@ public class MainProject {
 //            System.out.println("Syntaxe: java TestLecteurDonnees <nomDeFichier>");
 //            System.exit(1);
 //        }
-		String nomfichier = "cartes/carteSujet.map";
+		//String nomfichier = "cartes/carteSujet.map";
+		//String nomfichier = "cartes/desertOfDeath-20x20.map";
+		String nomfichier = "cartes/mushroomOfHell-20x20.map";
+		//String nomfichier = "cartes/spiralOfMadness-50x50.map";
 		//System.out.println("Working Directory = " + System.getProperty("user.dir")); 
         try {
             DonneesSimulation d = LecteurDonnees.creeDonnees(nomfichier);
+            //d.ranger();
+            d.getIncendies().forEach(incendie -> System.out.println(incendie.toString()+"\n"));
+            d.getRobots().forEach(incendie -> System.out.println(incendie.toString()+"\n"));
             ChefPompier chefPompier = new ChefPompier(d);
             GUISimulator gui = new GUISimulator(800, 600, Color.BLACK);
             Simulateur sim = new Simulateur(gui, d);

@@ -2,7 +2,7 @@ package tpl;
 
 
 
-public class Incendie {
+public class Incendie implements Comparable<Incendie>{
 	private Case position;
 	private int intensite;
 	private StatutIncendie statut; 
@@ -36,6 +36,12 @@ public class Incendie {
 	@Override
 	public String toString() {
 		return "Incendie [position=" + position + ", intensite=" + intensite + "]\n";
+	}
+
+	@Override
+	public int compareTo(Incendie o) {
+		// TODO Auto-generated method stub
+		return o.intensite-this.intensite;
 	}
 	
 }
