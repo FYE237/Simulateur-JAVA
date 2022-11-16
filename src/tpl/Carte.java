@@ -46,6 +46,7 @@ public class Carte {
 			case OUEST:
 				return src.getColonne() > 0;
 			default:
+				System.out.println("Default");
 				return false;
 		}
 	}

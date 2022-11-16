@@ -2,6 +2,7 @@ package tpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import robot.Drone;
 import robot.Robot;
@@ -45,6 +46,18 @@ public class DonneesSimulation {
 	public void ranger() {
 		Collections.sort(this.incendies);
 		Collections.sort(this.robots);
+	}
+	
+	public List<Case> getPointsEau(){
+		List<Case> pointsEau = new ArrayList<Case>();
+		for(int i=0; i<this.carte.getNbLignes();i++) {
+			for(int j=0; j<this.carte.getNbColonnes();j++) {
+				if(this.carte.getCase(i, j).getNature() == NatureTerrain.EAU) {
+					pointsEau.add(this.carte.getCase(i, j));
+				}
+			}
+		}
+		return pointsEau;
 	}
 	
 	public DonneesSimulation copy() {

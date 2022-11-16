@@ -27,13 +27,13 @@ public class RemplirRobot extends Evenement {
 	@Override
 	public long getDate() {
 		// TODO Auto-generated method stub
-		return date;
+		return this.date;
 	}
 
 	@Override
 	public void execute() {
 		// TODO Auto-generated method stub
-		robot.remplirReservoir(carte);
+		this.robot.remplirReservoir(carte);
 	}
 
 }

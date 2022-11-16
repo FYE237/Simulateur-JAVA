@@ -5,6 +5,7 @@ package robot;
 
 import tpl.Carte;
 import tpl.Case;
+import tpl.Direction;
 import tpl.NatureTerrain;
 
 /**
@@ -61,12 +62,29 @@ public class RobotAPatte extends Robot {
 	@Override
 	public void deverserEau() {
 		// TODO Auto-generated method stub
-		 this.volumeReservoir -=this.debit;
+		 //this.volumeReservoir -=this.debit;
 	}
 
 	@Override
 	public void remplirReservoir(Carte carte) {
 		// TODO Auto-generated method stub
+		if(carte.voisinExiste(this.getPosition(), Direction.NORD)) 
+		{
+		   if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU ) 
+			   this.volumeReservoir = 2000;
+		}
+		if(carte.voisinExiste(this.getPosition(), Direction.SUD)) {
+			if(carte.getVoisin(this.position, Direction.SUD).getNature() == NatureTerrain.EAU )
+				this.volumeReservoir = 2000;
+		}
+		if(carte.voisinExiste(this.getPosition(), Direction.OUEST)) {
+			if(carte.getVoisin(this.position, Direction.OUEST).getNature() == NatureTerrain.EAU )
+				this.volumeReservoir = 2000;
+		}
+		if(carte.voisinExiste(this.getPosition(), Direction.EST)) {
+			if(carte.getVoisin(this.position, Direction.EST).getNature() == NatureTerrain.EAU )
+				this.volumeReservoir = 2000;
+		}
 	}
 
 }

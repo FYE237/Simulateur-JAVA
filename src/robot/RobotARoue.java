@@ -74,16 +74,16 @@ public class RobotARoue  extends Robot{
 			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU )
 				this.volumeReservoir = 5000;
 		}
-		else if(carte.voisinExiste(this.getPosition(), Direction.SUD)) {
-			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU )
+		if(carte.voisinExiste(this.getPosition(), Direction.SUD)) {
+			if(carte.getVoisin(this.position, Direction.SUD).getNature() == NatureTerrain.EAU )
 				this.volumeReservoir = 5000;
 		}
-		else if(carte.voisinExiste(this.getPosition(), Direction.OUEST)) {
-			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU )
+		if(carte.voisinExiste(this.getPosition(), Direction.OUEST)) {
+			if(carte.getVoisin(this.position, Direction.OUEST).getNature() == NatureTerrain.EAU )
 				this.volumeReservoir = 5000;
 		}
-		else if(carte.voisinExiste(this.getPosition(), Direction.EST)) {
-			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU )
+		if(carte.voisinExiste(this.getPosition(), Direction.EST)) {
+			if(carte.getVoisin(this.position, Direction.EST).getNature() == NatureTerrain.EAU )
 				this.volumeReservoir = 5000;
 		}
 	}

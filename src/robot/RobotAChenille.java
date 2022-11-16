@@ -66,25 +66,32 @@ public class RobotAChenille extends Robot {
 	//fye
 	@Override
 	public void remplirReservoir(Carte carte) {
+
+
 		if(carte.voisinExiste(this.getPosition(), Direction.NORD)) 
 		{
+			System.out.println("AAAAAZD");
 		   if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU ) 
 			   this.volumeReservoir = 2000;
 		}
-		else if(carte.voisinExiste(this.getPosition(), Direction.SUD)) {
-			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU )
+		if(carte.voisinExiste(this.getPosition(), Direction.SUD)) {
+			System.out.println("AAAAAZC");
+			if(carte.getVoisin(this.position, Direction.SUD).getNature() == NatureTerrain.EAU )
 				this.volumeReservoir = 2000;
 		}
-		else if(carte.voisinExiste(this.getPosition(), Direction.OUEST)) {
-			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU )
+		if(carte.voisinExiste(this.getPosition(), Direction.OUEST)) {
+			System.out.println("AAAAAZB");
+			if(carte.getVoisin(this.position, Direction.OUEST).getNature() == NatureTerrain.EAU )
 				this.volumeReservoir = 2000;
 		}
-		else if(carte.voisinExiste(this.getPosition(), Direction.EST)) {
-			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU )
+		if(carte.voisinExiste(this.getPosition(), Direction.EST)) {
+			System.out.println("AAAAAZA");
+			if(carte.getVoisin(this.position, Direction.EST).getNature() == NatureTerrain.EAU )
 				this.volumeReservoir = 2000;
+			
 		}
 		// TODO Auto-generated method stub
-		
+		System.out.println("***** " + this);
 	}
 
 }

@@ -52,9 +52,9 @@ public class Drone extends Robot{
 
 	//Il vide le reservoir
 	@Override
-	public void deverserEau() {
+	public void deverserEau(){
 		// TODO Auto-generated method stub
-		//this.volumeReservoir= 0;
+		this.volumeReservoir= 0;
 	}
 
 	//fye
