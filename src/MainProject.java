@@ -18,39 +18,41 @@ import gui.GUISimulator;
 public class MainProject {
 	
 	public static void main(String[] args) {
-//        if (args.length < 1) {
-//            System.out.println("Syntaxe: java TestLecteurDonnees <nomDeFichier>");
-//            System.exit(1);
-//        }
+        if (args.length < 1) {
+            System.out.println("Syntaxe: java TestLecteurDonnees <nomDeFichier>");
+            System.exit(1);
+        }
+        
+        String nomfichier = args[0];
+        
 		//String nomfichier = "cartes/carteSujet.map";
-		String nomfichier = "cartes/desertOfDeath-20x20.map";
+		//String nomfichier = "cartes/desertOfDeath-20x20.map";
 		//String nomfichier = "cartes/mushroomOfHell-20x20.map";
 		//String nomfichier = "cartes/spiralOfMadness-50x50.map";
-		//System.out.println("Working Directory = " + System.getProperty("user.dir")); 
+
+        
         try {
+        	//Creation des données de Simulation
             DonneesSimulation d = LecteurDonnees.creeDonnees(nomfichier);
+            
+            /*
+             * On range les feux dans l'ordre décroissant de leur intensité. 
+             * On range les robots dans l'ordre décroissant de leur debit
+             */
+           
             d.ranger();
-            d.getIncendies().forEach(incendie -> System.out.println(incendie.toString()+"\n"));
-            d.getRobots().forEach(incendie -> System.out.println(incendie.toString()+"\n"));
+            
             ChefPompier chefPompier = new ChefPompier(d);
+            
             GUISimulator gui = new GUISimulator(800, 600, Color.BLACK);
+            
             Simulateur sim = new Simulateur(gui, d);
-//            sim.ajouteEvenement(new DeplacementRobot(0,d.getCarte().getCase(7, 1), d.getRobots().get(0),d.getCarte()));
-//            sim.ajouteEvenement(new VerserEau(1,d.getIncendies().get(1),d.getRobots().get(0)));
-//            sim.ajouteEvenement(new DeplacementRobot(2,d.getCarte().getCase(0, 0), d.getRobots().get(0),d.getCarte()));
-//            Chemin chemin = new Chemin(d.getRobots().get(0),d.getCarte().getCase(0, 0),d.getCarte());
-//            System.out.println("Temps optimal: "+chemin.getCheminOptimal());
-//            for(Case cas: chemin.getChemin()) {
-//            	System.out.println(cas);
-//            }
-//            for (long name: sim.getEvents().keySet()) {
-//                String value = sim.getEvents().get(name).toString();
-//                System.out.println(name + " " + value);
-//            }
-            System.out.println("1");
+
+            //Il parcour la liste des incendie et définie une strategie pour éteindre les incendie
             chefPompier.parcourListeIncendie();
-            System.out.println("2");
-            chefPompier.getListeEvenement().forEach(evenement -> evenement.toString());
+            
+            
+            //On ajoute les evenements définis par le chef pompier dans la liste des evenements que doit executer notre simulateur
             chefPompier.getListeEvenement().forEach(evenement -> sim.ajouteEvenement(evenement));
             for(long key: sim.getEvents().keySet()) {
             	List<Evenement> list = sim.getEvents().get(key);
@@ -60,6 +62,7 @@ public class MainProject {
                 	}
                 }
             }
+            
            System.out.println("String:"+d.getRobots().get(0).getClass());
             
         } catch (FileNotFoundException e) {
