@@ -7,6 +7,11 @@ public class Incendie implements Comparable<Incendie>{
 	private int intensite;
 	private StatutIncendie statut; 
 	
+	/**
+	 * 
+	 * @param position
+	 * @param intensite
+	 */
 	public Incendie(Case position, int intensite) {
 		this.position = position;
 		this.intensite = intensite;
@@ -37,10 +42,12 @@ public class Incendie implements Comparable<Incendie>{
 	public String toString() {
 		return "Incendie [position=" + position + ", intensite=" + intensite + "]\n";
 	}
-
+	
+	/**
+	 * Comparateur d'incendies à partir de leurs intensités
+	 */
 	@Override
 	public int compareTo(Incendie o) {
-		// TODO Auto-generated method stub
 		return o.intensite-this.intensite;
 	}
 	

@@ -8,6 +8,12 @@ public class Carte {
 	private int tailleCases;
 	private Case[][] grille;
 	
+	/**
+	 * 
+	 * @param nbLignes
+	 * @param nbColonnes
+	 * @param tailleCases
+	 */
 	public Carte(int nbLignes, int nbColonnes, int tailleCases) {
 		this.nbLignes = nbLignes;
 		this.nbColonnes = nbColonnes;
@@ -35,6 +41,13 @@ public class Carte {
 		this.grille[lig][col] = cas;
 	}
 	
+	/**
+	 * 
+	 * @param src
+	 * @param dir
+	 * @return 
+	 * Verifie si une case à un voisin sur la carte
+	 */
 	public boolean voisinExiste(Case src, Direction dir) {
 		switch(dir) {
 			case NORD:
@@ -46,11 +59,17 @@ public class Carte {
 			case OUEST:
 				return src.getColonne() > 0;
 			default:
-				System.out.println("Default");
 				return false;
 		}
 	}
 	
+	/**
+	 * 
+	 * @param src
+	 * @param dir
+	 * @return
+	 * Renvoie le voisin d'une case dans une direction donnée
+	 */
 	public Case getVoisin(Case src, Direction dir) {
 		switch(dir) {
 			case NORD:
@@ -66,6 +85,11 @@ public class Carte {
 		}
 	}
 
+	/**
+	 * 
+	 * @return
+	 * Copie l'instance de la carte et renvoie une nouvelle carte identique
+	 */
 	public Carte copy() {
 		Carte c = new Carte(this.nbLignes,this.nbColonnes,this.tailleCases);
 		for(int i = 0; i<this.nbLignes; i++) {

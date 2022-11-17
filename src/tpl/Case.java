@@ -5,6 +5,12 @@ public class Case {
 	private int colonne;
 	private NatureTerrain nature;
 	
+	/**
+	 * 
+	 * @param ligne
+	 * @param colonne
+	 * @param nature
+	 */
 	public Case(int ligne, int colonne, NatureTerrain nature) {
 		this.ligne = ligne;
 		this.colonne = colonne;
