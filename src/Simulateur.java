@@ -43,8 +43,27 @@ public class Simulateur implements Simulable {
 	/**Date ou étape courante de la simulation**/
 	private long dateSimulation = 0;
 
-	/*Liste d'évènements à exécuter*/
+	/**Dictionnaire d'évènements à exécuter*/
 	private HashMap<Long, List<Evenement>> events = new HashMap<>();
+	
+	/*Permet de charger les images*/
+	private ImageObserver obs = new ImageObserver() {
+		public boolean imageUpdate(Image image, int flags, int x, int y, int width, int height) {
+			if ((flags & HEIGHT) != 0)
+				//System.out.println("Image height = " + height);
+			if ((flags & WIDTH) != 0)
+				//System.out.println("Image width = " + width);
+			if ((flags & FRAMEBITS) != 0)
+				System.out.println("Another frame finished.");
+			if ((flags & SOMEBITS) != 0)
+				//System.out.println("Image section :" + new Rectangle(x, y, width, height));
+			if ((flags & ALLBITS) != 0)
+				//System.out.println("Image finished!");
+			if ((flags & ABORT) != 0)
+				System.out.println("Image load aborted...");
+			return true;
+		}
+	};
 
 	/**
 	 * Crée un robot et le dessine.
@@ -62,43 +81,22 @@ public class Simulateur implements Simulable {
 	}
 
 
-	/**
-	 * Programme les déplacements de le robot.
-	 * @param abscisseInitial
-	 * @param abscisseFinal
-	 * @param ordonneeInitial
-	 * @param ordonneeFinal
-	 * @param taillecase
-	 */
-	@Override
-	public void next() {
-		//System.out.println("Next0");
-		if(!simulationTerminee()){
-			//System.out.println("Next - ok");
-			if(this.events.containsKey(this.dateSimulation)) {
-				System.out.println("Next - ok ok");
-				for(Evenement event : this.events.get(this.dateSimulation)) {
-					System.out.println("Exécution");
-					System.out.println(event);
-					//System.out.println(this.donneesSimulation.getIncendies().get(1).getIntensite());
-					event.execute();
-					for(Robot robot: this.donneesSimulation.getRobots()) {
-						System.out.println(robot);
-					}
-					//System.out.println(this.donneesSimulation.getIncendies().get(1).getIntensite());
-				}
-			}
-			incrementeDate();
-		}
-		draw();
-
+	public HashMap<Long, List<Evenement>> getEvents() {
+		return events;
 	}
-
-	@Override
-	public void restart() {
-		RestareDonnées(this.copie);
-		this.dateSimulation = 0;
-		draw();
+	
+	
+	/**
+	 * Ajoute un évenement au simulateur
+	 * @param e
+	 */
+	public void ajouteEvenement(Evenement e){
+		//System.out.println(e.toString());//fye
+		if(!this.events.containsKey(e.getDate())) {
+			this.events.put(e.getDate(), new ArrayList<Evenement>());
+		}
+		this.events.get(e.getDate()).add(e);
+		
 	}
 
 
@@ -112,60 +110,7 @@ public class Simulateur implements Simulable {
 		drawListeIncendies(donneesSimulation.getIncendies());
 		drawListeRobot(donneesSimulation.getRobots());
 	}
-	
-	
 
-	public HashMap<Long, List<Evenement>> getEvents() {
-		return events;
-	}
-
-
-	/*Ajouter un evènement*/
-	public void ajouteEvenement(Evenement e){
-		//System.out.println(e.toString());//fye
-		if(!this.events.containsKey(e.getDate())) {
-			this.events.put(e.getDate(), new ArrayList<Evenement>());
-		}
-		this.events.get(e.getDate()).add(e);
-		
-	}
-
-	/*Verifie si la simulation est terminée*/
-	private boolean simulationTerminee(){
-		boolean flag = true;
-		List<Long> dates = new ArrayList<Long>(this.events.keySet());
-		for(long date : dates) {
-			flag = flag && (this.dateSimulation>date);
-		}
-		return flag;
-	}
-
-	/*Incremente la date de la simulation*/
-	private void incrementeDate(){
-		if(!simulationTerminee()) {
-			this.dateSimulation += 1;
-		}
-	}
-
-
-	
-	ImageObserver obs = new ImageObserver() {
-		public boolean imageUpdate(Image image, int flags, int x, int y, int width, int height) {
-			if ((flags & HEIGHT) != 0)
-				//System.out.println("Image height = " + height);
-			if ((flags & WIDTH) != 0)
-				//System.out.println("Image width = " + width);
-			if ((flags & FRAMEBITS) != 0)
-				System.out.println("Another frame finished.");
-			if ((flags & SOMEBITS) != 0)
-				//System.out.println("Image section :" + new Rectangle(x, y, width, height));
-			if ((flags & ALLBITS) != 0)
-				//System.out.println("Image finished!");
-			if ((flags & ABORT) != 0)
-				System.out.println("Image load aborted...");
-			return true;
-		}
-	};
 	
 	/**
 	 * Dessiner la liste des incendies
@@ -187,15 +132,66 @@ public class Simulateur implements Simulable {
 	private void drawCarte(Carte carte){
 		for(int i = 0; i < carte.getNbLignes(); i++){
 			for(int j = 0; j< carte.getNbColonnes(); j++){
-				//gui.addGraphicalElement(new gui.Rectangle( this.tailleCase*(j+1) ,this.tailleCase*(i+1) , Color.black, getColorTerrain(carte.getCase(i,j).getNature()),this.tailleCase));
 				gui.addGraphicalElement(new gui.ImageElement( this.tailleCase*(j+1),this.tailleCase*(i+1), getFileNameTerrain(carte.getCase(i,j).getNature()),this.tailleCase,this.tailleCase,this.obs));
 
 			}
 		}
 	}
+	
+	/**
+	 * Si la simulation n'est pas terminée, on effectue tous les évènements de
+	 * la date courante et on incrémente la date
+	 */
+	@Override
+	public void next() {
+		if(!simulationTerminee()){
+			if(this.events.containsKey(this.dateSimulation)) {
+				System.out.println("Next - ok ok");
+				for(Evenement event : this.events.get(this.dateSimulation)) {
+					System.out.println("Exécution");
+					System.out.println(event);
+					event.execute();
+					for(Robot robot: this.donneesSimulation.getRobots()) {
+						System.out.println(robot);
+					}
+				}
+			}
+			incrementeDate();
+		}
+		draw();
 
+	}
 
+	/**
+	 * Restaure les données initiales et remet la date à 0
+	 */
+	@Override
+	public void restart() {
+		RestaureDonnées(this.copie);
+		this.dateSimulation = 0;
+		draw();
+	}
+	
+	/**
+	 * Verifie si la simulation est terminée
+	 * */
+	private boolean simulationTerminee(){
+		boolean flag = true;
+		List<Long> dates = new ArrayList<Long>(this.events.keySet());
+		for(long date : dates) {
+			flag = flag && (this.dateSimulation>date);
+		}
+		return flag;
+	}
 
+	/**
+	 * Incremente la date de la simulation si la simulation n'est pas terminée
+	 * */
+	private void incrementeDate(){
+		if(!simulationTerminee()) {
+			this.dateSimulation += 1;
+		}
+	}
 
 	/**
 	 * Dessiner les robots
@@ -227,8 +223,10 @@ public class Simulateur implements Simulable {
 
 
 
-	/** calcul de la taille d'une case */
-	public void setTailleCase(){
+	/**
+	 * Calcule la taille d'une case pour que toute la carte tienne à l'écran
+	 */
+	private void setTailleCase(){
 		if(800 / donneesSimulation.getCarte().getNbColonnes() < 600 / donneesSimulation.getCarte().getNbLignes()){
 			this.tailleCase = 800 / (donneesSimulation.getCarte().getNbColonnes() +1);
 		}
@@ -239,7 +237,7 @@ public class Simulateur implements Simulable {
 
 
 	/**
-	 * rechercher la couleur d'un terrain
+	 * Retourne le chemin de l'image correspondant à une nature de terrain
 	 * @param nature
 	 * @return
 	 */
@@ -261,13 +259,15 @@ public class Simulateur implements Simulable {
 		}
 	}
 	
-	private void RestareDonnées(DonneesSimulation copieDonnées){
-
+	/**
+	 * Recrée les données de configuration initiales à partir de la sauvegarde
+	 * @param copieDonnées
+	 */
+	private void RestaureDonnées(DonneesSimulation copieDonnées){
 		for(int i=0; i<this.donneesSimulation.getIncendies().size(); i++){
 			this.donneesSimulation.getIncendies().get(i).setStatut(this.copie.getIncendies().get(i).getStatut());
 			this.donneesSimulation.getIncendies().get(i).setIntensite(this.copie.getIncendies().get(i).getIntensite());
 		}
-
 		/*mise à jour des robot*/
 		for(int i=0; i<this.donneesSimulation.getRobots().size(); i++){
 			this.donneesSimulation.getRobots().get(i).setPosition(this.copie.getCarte(),this.copie.getRobots().get(i).getPosition());
@@ -275,8 +275,6 @@ public class Simulateur implements Simulable {
 			this.donneesSimulation.getRobots().get(i).setVolumeReservoir();
 
 		}
-
-
 	}
 
 

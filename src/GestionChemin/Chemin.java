@@ -14,7 +14,6 @@ import tpl.Direction;
 import robot.Robot;
 
 /**
- * @author fezeuyoe
  * Il s'agit d'une classe qui calcule le chemin optimal pour qu'un robot se deplace d'une case à une autre
  *
  */
@@ -66,7 +65,7 @@ public class Chemin {
 				}
 			}
 			P.add(c);
-			if(this.robot.getVitesse(c.getNature())>0){
+			if(this.robot.getVitesse(c.getNature())>0.0){
 				tim = this.carte.getTailleCases()/this.robot.getVitesse(c.getNature());
 				for(Direction dir : directions) {
 					if(this.carte.voisinExiste(c, dir)) {

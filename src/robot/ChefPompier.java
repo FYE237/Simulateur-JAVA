@@ -174,7 +174,7 @@ public class ChefPompier {
 							//Si on a pu trouvé un chemin optimal (Si le robot a pu se déplacer)
 							if(timedeplacement != Double.MAX_VALUE) {
 
-								date = this.executeSuiteEvenement(chemin, position, robot, incendie, positionIncendie);
+								date = this.executeSuiteEvenementPeauPProche(chemin, position, robot, incendie, positionIncendie);
 								//Mise à jour date de dernier évenement de notre robot
 								ListeRobot.put(robot, date);
 
@@ -189,7 +189,7 @@ public class ChefPompier {
 
 									/*
 									 * Si son réservoir est vide, notre robot doit aller se remplir
-									 * Calcul de chemin à parcourir pour aller au point d'eau le plus proche
+66									 * Calcul de chemin à parcourir pour aller au point d'eau le plus proche
 									 */
 
 									List<Case> cheminPointEauPProche = this.getPointEauPProche(robot); 
@@ -262,7 +262,7 @@ public class ChefPompier {
 	 * @param positionIncendie
 	 * @return date : La date à laquelle cette série d'evenement se termine
 	 */
-	public long executeSuiteEvenement(Chemin chemin,int position, Robot robot,Incendie incendie,int positionIncendie) {
+	public long executeSuiteEvenementPeauPProche(Chemin chemin,int position, Robot robot,Incendie incendie,int positionIncendie) {
 		for (Case c : chemin.getChemin()) { // Parcours de la liste des cases de notre chemin
 
 			new DeplacementRobot(date, c, robot,donneesSimulation.getCarte() ).execute();

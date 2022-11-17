@@ -59,7 +59,7 @@ public class RobotAChenille extends Robot {
 	@Override
 	public double getVitesse(NatureTerrain nature) {
 		// TODO Auto-generated method stub
-		if(position.getNature() == NatureTerrain.FORET) {
+		if(nature == NatureTerrain.FORET) {
 			return this.vitesse*0.5;
 		}
 		if(nature == NatureTerrain.EAU || nature == NatureTerrain.ROCHE	) {
