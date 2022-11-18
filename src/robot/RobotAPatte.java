@@ -100,26 +100,9 @@ public class RobotAPatte extends Robot {
 	public void remplirReservoir(Carte carte) {
 
 		/*
-		 * Pour ce robot il se met à côté d'une case proche de l'eau pour se remplir. On vérifie si le voisin exite ensuite on verifie
-		 * si ce voisin est un terrain d'eau. Puis on change la valeur du réservoir
+		 * Pour ce robot il ne se remplira  jamais donc cette méthode n'est jamais appelé
 		 */
-		if(carte.voisinExiste(this.getPosition(), Direction.NORD)) 
-		{
-			if(carte.getVoisin(this.position, Direction.NORD).getNature() == NatureTerrain.EAU ) 
-				this.volumeReservoir = 2000;
-		}
-		if(carte.voisinExiste(this.getPosition(), Direction.SUD)) {
-			if(carte.getVoisin(this.position, Direction.SUD).getNature() == NatureTerrain.EAU )
-				this.volumeReservoir = 2000;
-		}
-		if(carte.voisinExiste(this.getPosition(), Direction.OUEST)) {
-			if(carte.getVoisin(this.position, Direction.OUEST).getNature() == NatureTerrain.EAU )
-				this.volumeReservoir = 2000;
-		}
-		if(carte.voisinExiste(this.getPosition(), Direction.EST)) {
-			if(carte.getVoisin(this.position, Direction.EST).getNature() == NatureTerrain.EAU )
-				this.volumeReservoir = 2000;
-		}
+		
 	}
 
 }
